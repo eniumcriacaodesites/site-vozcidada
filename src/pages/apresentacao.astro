@@ -1,0 +1,386 @@
+---
+import { componentFor } from '@/components/slides/registry';
+import Icon from '@/components/ui/Icon.astro';
+import LogoMark from '@/components/ui/LogoMark.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { deckOrder, getSlides, slideAnchor } from '@/lib/slides';
+
+/**
+ * Modo Apresentação: os mesmos slides da landing num palco 1920×1080,
+ * com etapas "ao clicar", passador de slides, visão geral e PDF (imprimir).
+ */
+const slides = deckOrder(await getSlides());
+const shortcuts = [
+    ['→ ↓ PgDn Espaço Enter · clique', 'Avançar'],
+    ['← ↑ PgUp Backspace', 'Voltar'],
+    ['Home / End', 'Primeiro / último slide'],
+    ['número + Enter', 'Ir para o slide'],
+    ['F', 'Tela cheia'],
+    ['O · Esc', 'Visão geral'],
+    ['B', 'Tela preta'],
+    ['S', 'Modo apresentador (notas)'],
+    ['?', 'Esta ajuda'],
+];
+---
+
+<BaseLayout
+    title="Apresentação"
+    description="Apresentação do VozCidadã para prefeituras."
+    path="/apresentacao"
+    noindex
+    mode="deck"
+    bodyClass="deck-body"
+>
+    <div class="deck-viewport">
+        <div
+            class="deck-stage"
+            data-deck-stage
+            role="region"
+            aria-roledescription="apresentação"
+            aria-label="Apresentação do VozCidadã"
+        >
+            {slides.map((slide, index) => {
+                const Component = componentFor(slideAnchor(slide.id));
+                return Component ? (
+                    <div
+                        data-deck-slide
+                        data-slide={slideAnchor(slide.id)}
+                        data-nav-label={slide.data.navLabel}
+                        data-deck={slide.data.deck}
+                        data-index={index}
+                        aria-roledescription="slide"
+                    >
+                        <Component slide={slide} mode="deck" />
+                    </div>
+                ) : null;
+            })}
+            <div
+                class="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-1.5 bg-black/20"
+                aria-hidden="true"
+            >
+                <div
+                    class="h-full origin-left bg-[linear-gradient(90deg,#F07D3F,#F2C230)] transition-transform duration-500"
+                    data-deck-progress
+                ></div>
+            </div>
+        </div>
+    </div>
+
+    <p class="sr-only" aria-live="polite" data-deck-announcer></p>
+
+    <div
+        class="fixed inset-x-0 bottom-4 z-50 flex justify-center transition-opacity duration-500 data-[idle]:opacity-0 data-[idle]:hover:opacity-100 data-[idle]:focus-within:opacity-100"
+        data-deck-ui
+    >
+        <div class="flex items-center gap-1 rounded-full bg-navy-950/90 p-1.5 text-white shadow-lift ring-1 ring-white/15 backdrop-blur">
+            <a
+                href="/"
+                class="flex size-10 items-center justify-center rounded-full hover:bg-white/10"
+                aria-label="Sair da apresentação"
+                title="Sair"
+            >
+                <LogoMark class="h-6 w-auto text-white" />
+            </a>
+            <button
+                type="button"
+                class="deck-btn"
+                data-deck-action="prev"
+                aria-label="Voltar"
+                title="Voltar (←)"
+            >
+                <Icon name="arrow-right" class="size-5 rotate-180" />
+            </button>
+            <span
+                class="tabular min-w-24 px-2 text-center text-sm font-bold"
+                data-deck-counter
+            >
+                1 / {slides.length}
+            </span>
+            <button
+                type="button"
+                class="deck-btn"
+                data-deck-action="next"
+                aria-label="Avançar"
+                title="Avançar (→)"
+            >
+                <Icon name="arrow-right" class="size-5" />
+            </button>
+            <span class="mx-1 h-6 w-px bg-white/15" aria-hidden="true"></span>
+            <button
+                type="button"
+                class="deck-btn"
+                data-deck-action="overview"
+                aria-label="Visão geral"
+                title="Visão geral (O)"
+            >
+                <Icon name="layers" class="size-5" />
+            </button>
+            <button
+                type="button"
+                class="deck-btn"
+                data-deck-action="notes"
+                aria-label="Abrir notas do apresentador"
+                title="Notas (S)"
+            >
+                <Icon name="file-text" class="size-5" />
+            </button>
+            <button
+                type="button"
+                class="deck-btn"
+                data-deck-action="fullscreen"
+                aria-label="Tela cheia"
+                title="Tela cheia (F)"
+            >
+                <Icon name="presentation" class="size-5" />
+            </button>
+            <button
+                type="button"
+                class="deck-btn"
+                data-deck-action="help"
+                aria-label="Atalhos de teclado"
+                title="Ajuda (?)"
+            >
+                <span class="text-base font-extrabold" aria-hidden="true">
+                    ?
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div
+        class="fixed inset-0 z-[60] overflow-y-auto bg-navy-950/95 p-10 text-white backdrop-blur"
+        data-deck-overview
+        hidden
+        role="dialog"
+        aria-label="Visão geral dos slides"
+    >
+        <div class="mx-auto flex max-w-6xl flex-col gap-6">
+            <div class="flex items-center justify-between">
+                <p class="text-2xl font-extrabold">Visão geral</p>
+                <button
+                    type="button"
+                    class="deck-btn"
+                    data-deck-action="close-panels"
+                    aria-label="Fechar"
+                >
+                    <Icon name="x" class="size-5" />
+                </button>
+            </div>
+            <ol class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {slides.map((slide, index) => (
+                    <li>
+                        <button
+                            type="button"
+                            class="flex h-full w-full flex-col gap-1 rounded-2xl bg-white/6 p-4 text-left ring-1 ring-white/12 transition-colors hover:bg-white/12"
+                            data-deck-goto={index}
+                        >
+                            <span class="text-xs font-bold tracking-widest text-orange-500">
+                                {String(index + 1).padStart(2, '0')} ·{' '}
+                                {slide.data.navLabel}
+                                {slide.data.deck === 'backup' && ' · reserva'}
+                            </span>
+                            <span class="font-semibold">
+                                {slide.data.title}
+                            </span>
+                        </button>
+                    </li>
+                ))}
+            </ol>
+        </div>
+    </div>
+
+    <div
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-navy-950/90 p-6 text-white backdrop-blur"
+        data-deck-help
+        hidden
+        role="dialog"
+        aria-label="Atalhos de teclado"
+    >
+        <div class="w-full max-w-lg rounded-3xl bg-navy-900 p-8 ring-1 ring-white/15">
+            <p class="mb-5 text-xl font-extrabold">Atalhos</p>
+            <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 text-sm">
+                {shortcuts.map(([key, action]) => (
+                    <>
+                        <dt class="font-mono font-bold text-orange-500">
+                            {key}
+                        </dt>
+                        <dd class="text-white/85">{action}</dd>
+                    </>
+                ))}
+            </dl>
+            <p class="mt-6 text-xs text-white/60">
+                Passadores de slide comuns funcionam (enviam PgUp/PgDn). Para
+                gerar o PDF, use Imprimir → Salvar como PDF.
+            </p>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 z-[70] bg-black" data-deck-blackout hidden></div>
+
+    <script>
+        import { initDeck } from '@/lib/deck/runtime';
+        import { captureOrigin } from '@/lib/analytics';
+
+        captureOrigin();
+        initDeck();
+    </script>
+</BaseLayout>
+
+<style is:global>
+    html[data-mode='deck'] {
+        --text-display: 6.5rem;
+        --text-title: 4.4rem;
+        --text-lead: 1.6rem;
+    }
+
+    html[data-mode='deck'],
+    .deck-body {
+        height: 100%;
+        overflow: hidden;
+        background: #020f22;
+    }
+
+    .deck-viewport {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+    }
+
+    .deck-stage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        transform: translate(-50%, -50%) scale(var(--deck-scale, 0.5));
+        transform-origin: center;
+        cursor: pointer;
+    }
+
+    .deck-stage [data-deck-slide] {
+        position: absolute;
+        inset: 0;
+        display: none;
+    }
+
+    .deck-stage [data-deck-slide][data-active] {
+        display: block;
+    }
+
+    html[data-mode='deck'] .slide {
+        min-height: 0;
+        height: 1080px;
+        padding-block: 64px;
+        overflow: hidden;
+    }
+
+    html[data-mode='deck'] .container-site {
+        max-width: 1720px;
+        padding-inline: 96px;
+    }
+
+    html[data-mode='deck'] [data-pending] {
+        display: none;
+    }
+
+    html[data-mode='deck'] [data-build] {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+            opacity 0.5s var(--ease-out-expo),
+            transform 0.6s var(--ease-out-expo);
+    }
+
+    html[data-mode='deck'] [data-build][data-built] {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* "Transformar" entre slides (View Transitions): celular e título. */
+    [data-deck-slide][data-active] [data-vt='phone'] {
+        view-transition-name: deck-phone;
+    }
+    [data-deck-slide][data-active] :is(h1, h2):first-of-type {
+        view-transition-name: deck-title;
+    }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 0.45s;
+    }
+    ::view-transition-group(deck-phone),
+    ::view-transition-group(deck-title) {
+        animation-duration: 0.6s;
+        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .deck-btn {
+        display: flex;
+        width: 2.5rem;
+        height: 2.5rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        transition: background-color 0.2s;
+    }
+    .deck-btn:hover {
+        background: rgb(255 255 255 / 0.1);
+    }
+
+    /* PDF: um slide por página, todas as etapas visíveis. */
+    @media print {
+        @page {
+            size: 1920px 1080px;
+            margin: 0;
+        }
+        html[data-mode='deck'],
+        .deck-body {
+            height: auto;
+            overflow: visible;
+        }
+        .deck-viewport {
+            position: static;
+            display: block;
+        }
+        .deck-stage {
+            position: static;
+            transform: none;
+            height: auto;
+            overflow: visible;
+            cursor: auto;
+        }
+        .deck-stage [data-deck-slide] {
+            display: block !important;
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+        }
+        .deck-stage [data-deck-slide] + [data-deck-slide] {
+            break-before: page;
+        }
+        /* Arquivo leve: sem textura de grão nem desfoques rasterizados. */
+        .grain::after {
+            display: none !important;
+        }
+        * {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        html[data-mode='deck'] [data-build] {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+        [data-deck-ui],
+        [data-deck-overview],
+        [data-deck-help],
+        [data-deck-blackout],
+        [data-deck-progress] {
+            display: none !important;
+        }
+        * {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>

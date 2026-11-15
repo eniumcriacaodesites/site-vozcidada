@@ -1,0 +1,57 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+
+import AppStatusBar from './AppStatusBar.astro';
+
+/** Escolha do local: GPS com precisão e pino ajustável. */
+---
+
+<div class="relative flex h-full flex-col bg-[#e9eef2]">
+    <div class="absolute inset-x-0 top-0 z-10">
+        <AppStatusBar tone="dark" />
+    </div>
+    <svg
+        class="absolute inset-0 h-full w-full"
+        viewBox="0 0 300 640"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+    >
+        <rect width="300" height="640" fill="#e9eef2"></rect>
+        <g fill="#dfe6d8">
+            <rect x="18" y="60" width="96" height="120" rx="6"></rect>
+            <rect x="186" y="340" width="100" height="110" rx="6"></rect>
+        </g>
+        <g fill="#d5dce4">
+            <rect x="140" y="60" width="140" height="120" rx="6"></rect>
+            <rect x="18" y="210" width="96" height="100" rx="6"></rect>
+            <rect x="18" y="340" width="140" height="110" rx="6"></rect>
+            <rect x="140" y="210" width="140" height="100" rx="6"></rect>
+            <rect x="18" y="480" width="268" height="120" rx="6"></rect>
+        </g>
+        <path
+            d="M0 195H300M0 325H300M0 465H300M127 0V640M172 330V470"
+            stroke="#fff"
+            stroke-width="14"
+        ></path>
+    </svg>
+    <span
+        class="absolute top-[42%] left-1/2 size-28 -translate-1/2 rounded-full border-2 border-navy-500/50 bg-navy-500/15"
+        aria-hidden="true"
+    ></span>
+    <span class="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-full text-orange-500 drop-shadow">
+        <Icon name="map-pin" class="size-10" strokeWidth={2.4} />
+    </span>
+    <div class="absolute inset-x-3 bottom-3 space-y-2 rounded-2xl bg-white p-3 shadow-soft">
+        <p class="text-[0.62rem] font-bold text-muted uppercase">
+            Local do problema
+        </p>
+        <p class="text-[0.8rem] font-extrabold">Rua das Flores, 120 — Centro</p>
+        <p class="flex items-center gap-1 text-[0.62rem] text-success">
+            <Icon name="navigation" class="size-3" /> GPS com precisão de 8 m ·
+            arraste o pino para ajustar
+        </p>
+        <span class="flex h-9 items-center justify-center rounded-xl bg-navy-900 text-[0.75rem] font-bold text-white">
+            Confirmar local
+        </span>
+    </div>
+</div>

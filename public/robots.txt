@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /apresentacao
+Disallow: /obrigado
+Disallow: /og
+Disallow: /api/
+
+Sitemap: https://vozcidada.enium.com.br/sitemap-index.xml

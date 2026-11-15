@@ -1,0 +1,32 @@
+---
+/**
+ * Moldura de celular em CSS puro (sem imagem). A tela é o <slot />.
+ * Use `label` para descrever a tela a leitores de tela.
+ */
+interface Props {
+    class?: string;
+    label?: string;
+}
+
+const { class: className = 'w-[min(18.5rem,70cqi)]', label } = Astro.props;
+---
+
+<figure
+    class:list={['relative mx-auto shrink-0', className]}
+    aria-label={label}
+    role={label ? 'img' : undefined}
+    data-vt="phone"
+>
+    <div class="relative aspect-[9/19] rounded-[2.75rem] bg-[#0a1424] p-[0.6rem] shadow-lift ring-1 ring-white/15">
+        <div
+            class="pointer-events-none absolute top-[1.05rem] left-1/2 z-20 h-[1.35rem] w-[32%] -translate-x-1/2 rounded-full bg-[#0a1424]"
+            aria-hidden="true"
+        ></div>
+        <div
+            class="relative h-full w-full overflow-hidden rounded-[2.2rem] bg-paper text-[0.8rem] leading-snug text-text"
+            aria-hidden={label ? 'true' : undefined}
+        >
+            <slot />
+        </div>
+    </div>
+</figure>

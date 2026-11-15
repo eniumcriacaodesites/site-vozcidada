@@ -1,0 +1,76 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { site } from '@/lib/site';
+
+/**
+ * Política de privacidade DO SITE COMERCIAL (dados do formulário de
+ * demonstração). Não substitui a política do app/sistema.
+ * PENDENTE: revisão jurídica e dados do controlador (razão social, CNPJ,
+ * encarregado).
+ */
+const controller = site.company.legalName || site.company.name;
+---
+
+<PageLayout
+    title="Política de privacidade"
+    description="Como o site comercial do VozCidadã trata os dados enviados no pedido de demonstração."
+    path="/privacidade"
+>
+    <article class="prose-site mx-auto flex max-w-3xl flex-col gap-6 text-[1.02rem] leading-relaxed text-text">
+        <h1 class="text-title font-extrabold text-navy-900">
+            Política de privacidade do site
+        </h1>
+        <p class="text-muted">
+            Esta política vale para o site comercial do VozCidadã (
+            {site.url.replace('https://', '')}). O tratamento de dados dentro do
+            sistema e do aplicativo usados pelas prefeituras tem políticas
+            próprias.
+        </p>
+
+        <h2 class="text-xl font-bold text-navy-900">Quem trata os dados</h2>
+        <p>
+            {controller}
+            {site.company.cnpj && `, CNPJ ${site.company.cnpj}`}, responsável
+            pelo VozCidadã.
+        </p>
+
+        <h2 class="text-xl font-bold text-navy-900">Quais dados coletamos</h2>
+        <p>
+            No formulário "Agendar demonstração": nome, cargo ou área, estado e
+            município, WhatsApp, e-mail e o melhor período para contato. Também
+            registramos de onde veio a visita (por exemplo, parâmetros de
+            campanha e a seção do site), sem identificar você em outros sites.
+        </p>
+
+        <h2 class="text-xl font-bold text-navy-900">Para que usamos</h2>
+        <p>
+            Para entrar em contato sobre a demonstração solicitada e, se houver
+            interesse, dar continuidade à conversa comercial com a sua
+            prefeitura. Não vendemos nem compartilhamos seus dados para
+            publicidade de terceiros.
+        </p>
+
+        <h2 class="text-xl font-bold text-navy-900">Cookies e métricas</h2>
+        <p>
+            O site não usa cookies de publicidade. As métricas de visitas são
+            agregadas e não usam cookies. Para proteger o formulário contra
+            robôs, usamos o Cloudflare Turnstile.
+        </p>
+
+        <h2 class="text-xl font-bold text-navy-900">Por quanto tempo</h2>
+        <p>
+            Mantemos os dados do pedido pelo tempo necessário ao contato
+            comercial e, depois, apenas o exigido por obrigação legal.
+        </p>
+
+        <h2 class="text-xl font-bold text-navy-900">Seus direitos</h2>
+        <p>
+            Você pode pedir acesso, correção ou exclusão dos seus dados, ou
+            revogar a autorização de contato, a qualquer momento
+            {site.contactEmail
+                ? ` pelo e-mail ${site.contactEmail}`
+                : ' pelos nossos canais de contato'}
+            .
+        </p>
+    </article>
+</PageLayout>

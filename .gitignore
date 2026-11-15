@@ -1,0 +1,27 @@
+# dependências e build
+node_modules/
+dist/
+.astro/
+.wrangler/
+
+# segredos locais (nunca versionar)
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# testes
+playwright-report/
+test-results/
+coverage/
+.lighthouseci/
+
+# sistema/editor
+.DS_Store
+Thumbs.db
+*.log
+
+# tipos gerados pelo wrangler (npm run cf-typegen)
+worker-configuration.d.ts

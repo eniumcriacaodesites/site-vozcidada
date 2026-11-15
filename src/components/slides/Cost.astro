@@ -1,0 +1,40 @@
+---
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S03 · O custo — retrabalho, desgaste e decisão no escuro (+ Lei 13.460). */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items, footnote } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection
+    slide={slide}
+    class="bg-[linear-gradient(180deg,#071a33_0%,#0c2a4d_100%)]"
+>
+    <div class="container-site flex flex-col gap-12">
+        <SectionHeader kicker={kicker} title={title} id={`${anchor}-title`} />
+        <FeatureGrid items={items} columns="@4xl:grid-cols-3" />
+        {footnote && (
+            <p
+                class="glass flex max-w-[60rem] items-start gap-4 rounded-2xl p-5 text-[clamp(1rem,0.9rem+0.4cqi,1.2rem)] text-white/85"
+                data-reveal
+                data-build={items.length + 1}
+            >
+                <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-orange-500 text-navy-950">
+                    <Icon name="scale" class="size-5" />
+                </span>
+                <span>{footnote}</span>
+            </p>
+        )}
+    </div>
+</SlideSection>

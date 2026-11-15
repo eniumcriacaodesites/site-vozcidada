@@ -1,0 +1,296 @@
+@import 'tailwindcss';
+
+/*
+ * Design system do site comercial do VozCidadã.
+ * Origem da paleta: vozcidada-app/src/theme.ts (identidade oficial do app).
+ *
+ * Regras de contraste (WCAG 2.2 AA):
+ * - orange-500 (#F07D3F) só sobre navy ou como fundo de botão com texto navy (5,3:1).
+ * - Texto/link laranja em fundo claro usa orange-700 (#AD4B17, 5,5:1 no branco).
+ * - green-500 só em ícones/elementos grandes no claro; texto "resolvido" usa success.
+ */
+@theme {
+    --color-navy-950: #05254d;
+    --color-navy-900: #0c2a4d;
+    --color-navy-800: #133760;
+    --color-navy-700: #1d4677;
+    --color-navy-500: #5b8fd0;
+    --color-navy-100: #e7edf5;
+
+    --color-orange-300: #f6a77c;
+    --color-orange-500: #f07d3f;
+    --color-orange-700: #ad4b17;
+    --color-orange-100: #fdeee5;
+
+    --color-green-500: #3ba55c;
+    --color-yellow-400: #f2c230;
+    --color-success: #166534;
+    --color-danger: #dc2626;
+
+    --color-paper: #f4f6fa;
+    --color-line: #e2e7ef;
+    --color-text: #0f1b2d;
+    --color-muted: #5b6779;
+    --color-subtle: #8d97a8;
+
+    --color-chat-bg: #efeae2;
+    --color-chat-out: #d9fdd3;
+    --color-chat-accent: #008069;
+
+    --radius-card: 1rem;
+    --radius-panel: 1.375rem;
+
+    --shadow-soft: 0 10px 30px -12px rgb(12 42 77 / 0.18);
+    --shadow-lift: 0 30px 60px -20px rgb(12 42 77 / 0.35);
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /*
+     * Escala fluida em unidades de CONTAINER (cqi): cada slide é um container,
+     * então o texto escala com a largura do slide — na landing (largura da
+     * tela) e no palco fixo de 1920px do Modo Apresentação.
+     */
+    --text-display: clamp(2.375rem, 1.4rem + 4.4cqi, 5.25rem);
+    --text-display--line-height: 1.02;
+    --text-title: clamp(1.875rem, 1.3rem + 2.7cqi, 3.75rem);
+    --text-title--line-height: 1.06;
+    --text-lead: clamp(1.0625rem, 0.98rem + 0.4cqi, 1.375rem);
+    --text-lead--line-height: 1.55;
+}
+
+/* A fonte vem da Fonts API do Astro (<Font cssVariable="--font-jakarta" />). */
+@theme inline {
+    --font-sans: var(--font-jakarta), system-ui, sans-serif;
+
+    /* Cores semânticas que mudam com o tema da seção (claro/escuro). */
+    --color-ink: var(--ink);
+    --color-ink-muted: var(--ink-muted);
+    --color-surface: var(--surface);
+    --color-surface-2: var(--surface-2);
+    --color-edge: var(--edge);
+    --color-accent-text: var(--accent-text);
+}
+
+@layer base {
+    :root {
+        --ink: var(--color-text);
+        --ink-muted: var(--color-muted);
+        --surface: #ffffff;
+        --surface-2: var(--color-paper);
+        --edge: var(--color-line);
+        --accent-text: var(--color-orange-700);
+        color-scheme: light;
+        scroll-padding-top: 5rem;
+    }
+
+    [data-theme='dark'] {
+        --ink: #ffffff;
+        --ink-muted: rgb(255 255 255 / 0.74);
+        --surface: rgb(255 255 255 / 0.06);
+        --surface-2: rgb(255 255 255 / 0.04);
+        --edge: rgb(255 255 255 / 0.14);
+        --accent-text: var(--color-orange-500);
+        color-scheme: dark;
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        @apply bg-paper font-sans text-text antialiased;
+        font-feature-settings: 'ss01' on;
+    }
+
+    ::selection {
+        background: var(--color-orange-500);
+        color: var(--color-navy-950);
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--color-orange-500);
+        outline-offset: 3px;
+        border-radius: 6px;
+    }
+
+    [data-theme='light'] :focus-visible,
+    :root:not([data-theme]) :focus-visible {
+        outline-color: var(--color-orange-700);
+    }
+
+    h1,
+    h2,
+    h3 {
+        text-wrap: balance;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    img,
+    svg {
+        max-width: 100%;
+    }
+}
+
+@layer components {
+    .container-site {
+        @apply mx-auto w-full max-w-[80rem] px-4 sm:px-6 lg:px-10;
+    }
+
+    .kicker {
+        @apply inline-flex items-center gap-2 text-sm font-bold tracking-[0.14em] text-accent-text uppercase;
+    }
+
+    .kicker::before {
+        content: '';
+        @apply inline-block h-0.5 w-6 rounded-full bg-current;
+    }
+
+    .slide {
+        @apply relative isolate flex min-h-svh flex-col justify-center overflow-clip py-24 sm:py-28;
+    }
+
+    .glass {
+        @apply border border-white/12 bg-white/6 backdrop-blur-md;
+    }
+
+    .card {
+        @apply rounded-card border border-edge bg-surface shadow-soft;
+    }
+
+    [data-theme='dark'] .card {
+        @apply shadow-none;
+    }
+
+    /* Grão sutil sobre fundos escuros (SVG inline, sem requisição). */
+    .grain::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.07;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        z-index: -1;
+    }
+
+    .skip-link {
+        @apply fixed top-3 left-3 z-[100] -translate-y-24 rounded-lg bg-orange-500 px-4 py-2 font-bold text-navy-950 transition-transform focus:translate-y-0;
+    }
+}
+
+@layer utilities {
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+/* Holofote que segue o ponteiro nos cartões (variáveis --mx/--my via JS). */
+[data-spotlight]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s;
+    background: radial-gradient(
+        260px circle at var(--mx, 50%) var(--my, 50%),
+        rgb(240 125 63 / 0.13),
+        transparent 65%
+    );
+}
+
+[data-spotlight]:hover::before {
+    opacity: 1;
+}
+
+/* Ondas da voz (logo) pulsando — puro CSS, funciona sem JS. */
+@keyframes voice-pulse {
+    0%,
+    100% {
+        opacity: 0.35;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes rise-in {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes float-y {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes typing-dot {
+    0%,
+    80%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    40% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+}
+
+.animate-voice > * {
+    animation: voice-pulse 2.4s ease-in-out infinite;
+}
+.animate-voice > *:nth-child(2) {
+    animation-delay: 0.25s;
+}
+.animate-voice > *:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+.animate-rise {
+    animation: rise-in 0.9s var(--ease-out-expo) both;
+}
+
+.animate-float {
+    animation: float-y 6s ease-in-out infinite;
+}
+
+/*
+ * Movimento reduzido: respeita a preferência do sistema e o botão
+ * "Pausar animações" (html[data-motion='off']). WCAG 2.2.2 e 2.3.3.
+ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+html[data-motion='off'] *,
+html[data-motion='off'] *::before,
+html[data-motion='off'] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}

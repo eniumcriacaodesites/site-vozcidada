@@ -1,0 +1,86 @@
+---
+import CityScape from '@/components/art/CityScape.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/**
+ * S14 · Case Nossa Senhora da Glória. Números e depoimento SÓ com
+ * autorização; enquanto pendentes, os valores aparecem como "—".
+ */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide, mode = 'web' } = Astro.props;
+const { kicker, title, lead, metrics, testimonial } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection
+    slide={slide}
+    class="grain bg-[linear-gradient(180deg,#0c2a4d_0%,#1d4677_100%)]"
+    scene="counters"
+>
+    <CityScape slot="bg" time="dawn" class="h-[20%] opacity-50" />
+    <div class="container-site relative z-10 flex flex-col gap-12 pb-[8cqi]">
+        <SectionHeader
+            kicker={kicker}
+            title={title}
+            lead={lead}
+            id={`${anchor}-title`}
+        />
+        <ul class="grid gap-4 @3xl:grid-cols-3">
+            {metrics.map((metric, index) => (
+                <li
+                    class="glass flex flex-col gap-1 rounded-2xl p-6"
+                    data-reveal
+                    data-build={index + 1}
+                >
+                    <span
+                        class="tabular text-[clamp(2.4rem,1.6rem+3cqi,4rem)] leading-none font-extrabold text-white"
+                        data-count-to={
+                            /^\d/.test(metric.value) ? metric.value : undefined
+                        }
+                    >
+                        {metric.value}
+                    </span>
+                    <span class="text-[1.02rem] font-semibold text-white/85">
+                        {metric.label}
+                    </span>
+                    {metric.note && (
+                        <span class="text-xs text-white/55">{metric.note}</span>
+                    )}
+                </li>
+            ))}
+        </ul>
+        {testimonial && (
+            <figure
+                class="glass flex max-w-[60rem] flex-col gap-4 rounded-2xl p-6 @3xl:p-8"
+                data-reveal
+                data-build={metrics.length + 1}
+            >
+                <Icon name="quote" class="size-8 text-orange-500" />
+                <blockquote class="text-[clamp(1.1rem,0.95rem+0.6cqi,1.45rem)] leading-relaxed font-semibold text-white">
+                    {testimonial.quote}
+                </blockquote>
+                <figcaption class="text-sm text-white/70">
+                    <b class="text-white">{testimonial.name}</b> ·{' '}
+                    {testimonial.role}
+                </figcaption>
+            </figure>
+        )}
+        {mode === 'web' && (
+            <div>
+                <Button href="#contato" track="cta_click:case" magnetic>
+                    Quero o mesmo na minha cidade
+                    <Icon name="arrow-right" class="size-4" />
+                </Button>
+            </div>
+        )}
+    </div>
+</SlideSection>

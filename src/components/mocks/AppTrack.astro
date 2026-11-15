@@ -1,0 +1,68 @@
+---
+import StreetScene from '@/components/art/StreetScene.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+import AppStatusBar from './AppStatusBar.astro';
+
+/** Acompanhamento da demanda: linha do tempo com os rótulos vistos pelo cidadão. */
+const steps = [
+    { label: 'Enviada', time: '10/11 · 09:12', done: true },
+    { label: 'Em análise', time: '10/11 · 09:40', done: true },
+    { label: 'Equipe a caminho', time: '11/11 · 08:05', done: true },
+    { label: 'Resolvida', time: '11/11 · 10:31', done: true, last: true },
+];
+---
+
+<div class="relative flex h-full flex-col bg-paper">
+    <div class="bg-navy-900 text-white">
+        <AppStatusBar />
+        <div class="px-4 pt-1 pb-3">
+            <p class="text-[0.62rem] text-white/75">Minhas demandas</p>
+            <p class="text-[0.95rem] font-extrabold">Protocolo #0042</p>
+        </div>
+    </div>
+    <div class="flex-1 space-y-3 overflow-hidden p-3">
+        <div class="flex items-center justify-between rounded-xl bg-white p-2.5 ring-1 ring-line">
+            <span class="text-[0.72rem] font-bold">Buraco na via</span>
+            <span class="rounded-full bg-[#e6f6ec] px-2 py-0.5 text-[0.6rem] font-bold text-success">
+                Resolvida
+            </span>
+        </div>
+        <ol class="space-y-0 rounded-xl bg-white p-3 ring-1 ring-line">
+            {steps.map((step) => (
+                <li class="relative flex gap-2.5 pb-3 last:pb-0">
+                    {!step.last && (
+                        <span class="absolute top-4 left-[7px] h-full w-0.5 bg-green-500/40" />
+                    )}
+                    <span class="relative z-10 mt-0.5 flex size-4 items-center justify-center rounded-full bg-green-500 text-white">
+                        <Icon name="check" class="size-2.5" strokeWidth={3.5} />
+                    </span>
+                    <span>
+                        <span class="block text-[0.72rem] font-bold">
+                            {step.label}
+                        </span>
+                        <span class="block text-[0.6rem] text-muted">
+                            {step.time}
+                        </span>
+                    </span>
+                </li>
+            ))}
+        </ol>
+        <div class="overflow-hidden rounded-xl bg-white ring-1 ring-line">
+            <div class="grid h-20 grid-cols-2 gap-px bg-line">
+                <div class="relative">
+                    <StreetScene state="before" />
+                    <span class="absolute top-1 left-1 rounded bg-black/55 px-1 text-[0.5rem] font-bold text-white">
+                        ANTES
+                    </span>
+                </div>
+                <div class="relative">
+                    <StreetScene state="after" />
+                    <span class="absolute top-1 left-1 rounded bg-black/55 px-1 text-[0.5rem] font-bold text-white">
+                        DEPOIS
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

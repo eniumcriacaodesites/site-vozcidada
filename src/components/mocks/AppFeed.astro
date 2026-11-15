@@ -1,0 +1,53 @@
+---
+import StreetScene from '@/components/art/StreetScene.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+import AppStatusBar from './AppStatusBar.astro';
+import AppTabBar from './AppTabBar.astro';
+
+/** Feed do município: comunicados fixados e obras concluídas com antes/depois. */
+---
+
+<div class="relative flex h-full flex-col bg-paper">
+    <div class="bg-navy-900 text-white">
+        <AppStatusBar />
+        <div class="flex items-end justify-between px-4 pt-1 pb-3">
+            <p class="text-[0.95rem] font-extrabold">Sua cidade</p>
+            <span class="flex items-center gap-1 rounded-full bg-white/12 px-2 py-0.5 text-[0.6rem] font-bold">
+                <Icon name="circle-check" class="size-3 text-green-500" /> obras
+                concluídas
+            </span>
+        </div>
+    </div>
+    <div class="flex-1 space-y-2.5 overflow-hidden px-3 pt-3">
+        <div class="rounded-2xl bg-white p-2.5 ring-1 ring-orange-500/40">
+            <p class="text-[0.58rem] font-bold text-orange-700 uppercase">
+                Fixado · Comunicado
+            </p>
+            <p class="text-[0.74rem] font-bold">Mutirão de limpeza no sábado</p>
+            <p class="text-[0.62rem] text-muted">
+                Secretaria de Obras e Serviços
+            </p>
+        </div>
+        {['Rua das Flores, Centro', 'Av. Central, São José'].map((place) => (
+            <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-line">
+                <div class="grid h-16 grid-cols-2 gap-px bg-line">
+                    <StreetScene state="before" />
+                    <StreetScene state="after" />
+                </div>
+                <div class="flex items-center justify-between p-2">
+                    <span>
+                        <span class="block text-[0.58rem] font-bold text-success">
+                            Obra concluída
+                        </span>
+                        <span class="block text-[0.7rem] font-bold">
+                            {place}
+                        </span>
+                    </span>
+                    <span class="text-[0.6rem] text-muted">♥ 24</span>
+                </div>
+            </div>
+        ))}
+    </div>
+    <AppTabBar />
+</div>

@@ -1,0 +1,43 @@
+---
+import LogoMark from '@/components/ui/LogoMark.astro';
+
+import AppStatusBar from './AppStatusBar.astro';
+
+/** Entrada sem senha: código de 6 dígitos enviado pelo WhatsApp. */
+const digits = ['4', '8', '2', '7', '1', ''];
+---
+
+<div class="relative flex h-full flex-col bg-paper">
+    <div class="bg-[linear-gradient(160deg,#1d4677,#0c2a4d)] pb-14 text-center text-white">
+        <AppStatusBar />
+        <LogoMark class="mx-auto mt-5 h-12 w-auto text-white" />
+        <p class="mt-2 text-[1rem] font-extrabold">VozCidadã</p>
+        <p class="text-[0.68rem] text-white/80">Prefeitura da sua cidade</p>
+    </div>
+    <div class="relative -mt-8 mx-3 space-y-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-line">
+        <p class="text-[0.95rem] font-extrabold">Digite o código</p>
+        <p class="text-[0.68rem] text-muted">
+            Enviamos um código pelo WhatsApp para (79) 9••••-1234.
+        </p>
+        <div class="flex justify-between gap-1.5">
+            {digits.map((d) => (
+                <span
+                    class:list={[
+                        'flex h-10 flex-1 items-center justify-center rounded-lg text-[1rem] font-extrabold ring-1',
+                        d
+                            ? 'bg-navy-100 ring-navy-700/30'
+                            : 'ring-orange-500 ring-2',
+                    ]}
+                >
+                    {d}
+                </span>
+            ))}
+        </div>
+        <span class="flex h-9 items-center justify-center rounded-xl bg-navy-900 text-[0.75rem] font-bold text-white">
+            Entrar
+        </span>
+        <p class="text-center text-[0.62rem] text-muted">
+            Sem senha. O código vale por 10 minutos.
+        </p>
+    </div>
+</div>

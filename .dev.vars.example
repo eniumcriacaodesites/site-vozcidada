@@ -1,0 +1,10 @@
+# Copie para .dev.vars (já está no .gitignore). Lido pelo Worker em `npm run dev` / `npm run preview`.
+# Turnstile: chave secreta de TESTE da Cloudflare (sempre aprova).
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Vazio = o e-mail não é enviado (apenas registrado no log, sem dados pessoais).
+SENDGRID_API_KEY=
+SHEETS_WEBHOOK_SECRET=
+LEAD_TO_EMAIL=
+LEAD_FROM_EMAIL=
+SHEETS_WEBHOOK_URL=
+SITE_ENV=development

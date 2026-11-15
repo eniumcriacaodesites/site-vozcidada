@@ -1,0 +1,110 @@
+---
+import DotNav from '@/components/site/DotNav.astro';
+import ScrollProgress from '@/components/site/ScrollProgress.astro';
+import SiteFooter from '@/components/site/SiteFooter.astro';
+import SiteHeader from '@/components/site/SiteHeader.astro';
+import VLibras from '@/components/site/VLibras.astro';
+import WhatsAppFloat from '@/components/site/WhatsAppFloat.astro';
+import { componentFor } from '@/components/slides/registry';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/lib/site';
+import { getSlides, slideAnchor } from '@/lib/slides';
+
+/** Landing em "slides": a mesma fonte do Modo Apresentação. */
+const slides = await getSlides();
+const nav = slides.map((slide) => ({
+    anchor: slideAnchor(slide.id),
+    label: slide.data.navLabel,
+    order: slide.data.order,
+}));
+const faq =
+    slides.find((slide) => slideAnchor(slide.id) === 'perguntas')?.data.faq ??
+    [];
+
+const organization = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: site.company.name,
+    url: site.url,
+    brand: { '@type': 'Brand', name: site.name },
+};
+const jsonLd = [
+    organization,
+    {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: site.name,
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web, Android',
+        description: site.description,
+        url: site.url,
+        inLanguage: 'pt-BR',
+        publisher: organization,
+    },
+    {
+        '@context': 'https://schema.org',
+        '@type': 'MobileApplication',
+        name: `${site.name} — app do cidadão`,
+        operatingSystem: 'Android',
+        applicationCategory: 'LifestyleApplication',
+        installUrl: site.googlePlayUrl,
+        inLanguage: 'pt-BR',
+    },
+    {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faq.map((entry) => ({
+            '@type': 'Question',
+            name: entry.q,
+            acceptedAnswer: { '@type': 'Answer', text: entry.a },
+        })),
+    },
+];
+---
+
+<BaseLayout jsonLd={jsonLd} path="/">
+    <a href="#conteudo" class="skip-link">
+        Ir para o conteúdo
+    </a>
+    <ScrollProgress />
+    <SiteHeader />
+    <DotNav items={nav} />
+
+    <main id="conteudo">
+        {slides.map((slide) => {
+            const Component = componentFor(slideAnchor(slide.id));
+            return Component ? <Component slide={slide} mode="web" /> : null;
+        })}
+    </main>
+
+    <SiteFooter />
+    <WhatsAppFloat />
+    <VLibras />
+
+    <script>
+        import { initSiteBehaviors, motionAllowed } from '@/lib/site-behaviors';
+
+        initSiteBehaviors();
+
+        // Camada de movimento (GSAP/Lenis) só quando faz sentido.
+        const lowPower =
+            (navigator as Navigator & { connection?: { saveData?: boolean } })
+                .connection?.saveData === true ||
+            (navigator.hardwareConcurrency ?? 8) <= 2;
+        const start = () => {
+            if (motionAllowed() && !lowPower) {
+                import('@/lib/motion').then(({ initMotion }) => initMotion());
+            }
+        };
+        start();
+        window.addEventListener('vc:motion-change', () => {
+            if (motionAllowed()) {
+                start();
+            } else {
+                import('@/lib/motion').then(({ destroyMotion }) =>
+                    destroyMotion(),
+                );
+            }
+        });
+    </script>
+</BaseLayout>

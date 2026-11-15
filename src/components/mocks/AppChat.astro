@@ -1,0 +1,143 @@
+---
+import StreetScene from '@/components/art/StreetScene.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+import AppStatusBar from './AppStatusBar.astro';
+
+/**
+ * Assistente de abertura de demanda (visual de WhatsApp), com as mensagens
+ * padrão reais do sistema (DemandFlowService::DEFAULTS).
+ * `data-msg` permite a revelação roteirizada; `compact` esconde o início.
+ */
+interface Props {
+    focus?: 'conversa' | 'local';
+}
+
+const { focus = 'conversa' } = Astro.props;
+---
+
+<div class="relative flex h-full flex-col bg-chat-bg" data-chat>
+    <div class="bg-chat-accent text-white">
+        <AppStatusBar />
+        <div class="flex items-center gap-2 px-3 pt-0.5 pb-2.5">
+            <span class="flex size-8 items-center justify-center rounded-full bg-white/20 text-[0.8rem] font-extrabold">
+                A
+            </span>
+            <span class="leading-tight">
+                <span class="block text-[0.78rem] font-bold">
+                    Ana · Prefeitura
+                </span>
+                <span class="block text-[0.6rem] text-white">online</span>
+            </span>
+        </div>
+    </div>
+
+    <div
+        class:list={[
+            'flex flex-1 flex-col justify-end gap-1.5 overflow-hidden px-2.5 pb-14 text-[0.68rem]',
+        ]}
+    >
+        {focus === 'conversa' && (
+            <>
+                <p
+                    class="max-w-[82%] self-start rounded-lg rounded-tl-none bg-white px-2.5 py-1.5 shadow-sm"
+                    data-msg
+                >
+                    Oi Maria! Para eu entender certinho o tamanho do problema,
+                    mande uma foto aqui do local para mim.
+                </p>
+                <div
+                    class="w-[62%] self-end overflow-hidden rounded-lg rounded-tr-none bg-chat-out p-1 shadow-sm"
+                    data-msg
+                >
+                    <div class="h-24 overflow-hidden rounded-md">
+                        <StreetScene state="before" />
+                    </div>
+                </div>
+            </>
+        )}
+        <p
+            class="max-w-[82%] self-start rounded-lg rounded-tl-none bg-white px-2.5 py-1.5 shadow-sm"
+            data-msg
+        >
+            Foto recebida! Agora, descreva brevemente o que precisa ser feito ou
+            o que você observou.
+        </p>
+        <div
+            class="flex max-w-[78%] items-center gap-2 self-end rounded-lg rounded-tr-none bg-chat-out px-2.5 py-1.5 shadow-sm"
+            data-msg
+        >
+            <Icon name="play" class="size-3.5 text-[#54656f]" />
+            <span class="flex h-4 items-center gap-[2px]" aria-hidden="true">
+                {[4, 9, 6, 12, 8, 14, 7, 10, 5, 11, 6, 9, 4, 7].map((h) => (
+                    <i
+                        class="block w-[2px] rounded-full bg-[#54656f]/70"
+                        style={`height:${h}px`}
+                    />
+                ))}
+            </span>
+            <span class="text-[0.6rem] text-[#54656f]">0:12</span>
+        </div>
+        {focus === 'local' && (
+            <>
+                <p
+                    class="max-w-[82%] self-start rounded-lg rounded-tl-none bg-white px-2.5 py-1.5 shadow-sm"
+                    data-msg
+                >
+                    Quase lá. Agora preciso que você compartilhe sua localização
+                    para sabermos exatamente onde agir.
+                </p>
+                <div
+                    class="w-[66%] self-end overflow-hidden rounded-lg rounded-tr-none bg-chat-out p-1 shadow-sm"
+                    data-msg
+                >
+                    <div class="relative h-16 overflow-hidden rounded-md bg-[#e8eef3]">
+                        <svg
+                            viewBox="0 0 120 60"
+                            class="absolute inset-0 h-full w-full"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M0 22H120M0 44H120M30 0V60M78 0V60"
+                                stroke="#fff"
+                                stroke-width="5"
+                            />
+                        </svg>
+                        <Icon
+                            name="map-pin"
+                            class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-full text-orange-500"
+                        />
+                    </div>
+                    <p class="px-1 pt-1 text-[0.6rem] font-bold">
+                        Rua das Flores, 120 — Centro
+                    </p>
+                </div>
+            </>
+        )}
+        <p
+            class="max-w-[86%] self-start rounded-lg rounded-tl-none bg-white px-2.5 py-1.5 shadow-sm"
+            data-msg
+        >
+            Sua demanda foi enviada com sucesso! Protocolo: <b>#0042</b>.
+            Acompanhe o status em “Minhas demandas”.
+        </p>
+        <span
+            class="flex w-12 items-center justify-center gap-1 self-start rounded-lg bg-white px-2 py-2"
+            data-typing
+            aria-hidden="true"
+        >
+            <i class="size-1.5 rounded-full bg-[#8696a0] [animation:typing-dot_1.2s_infinite]"></i>
+            <i class="size-1.5 rounded-full bg-[#8696a0] [animation:typing-dot_1.2s_.15s_infinite]"></i>
+            <i class="size-1.5 rounded-full bg-[#8696a0] [animation:typing-dot_1.2s_.3s_infinite]"></i>
+        </span>
+    </div>
+
+    <div class="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-chat-bg px-2 pb-2">
+        <span class="flex h-9 flex-1 items-center rounded-full bg-white px-3 text-[0.68rem] text-[#667781]">
+            Mensagem
+        </span>
+        <span class="flex size-9 items-center justify-center rounded-full bg-chat-accent text-white">
+            <Icon name="mic" class="size-4" />
+        </span>
+    </div>
+</div>

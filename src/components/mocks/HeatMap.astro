@@ -1,0 +1,104 @@
+---
+import { uid as nextUid } from '@/lib/uid';
+
+/**
+ * Mapa estilizado com quarteirões, manchas de calor e pinos.
+ * `data-heat` e `data-map-pin` permitem animar (cena "heatmap").
+ */
+interface Props {
+    class?: string;
+    tone?: 'light' | 'dark';
+    polygon?: boolean;
+}
+
+const {
+    class: className = 'h-full w-full',
+    tone = 'light',
+    polygon = false,
+} = Astro.props;
+const id = nextUid('heat');
+
+const colors =
+    tone === 'light'
+        ? { bg: '#eef2f6', block: '#dde4ec', street: '#ffffff' }
+        : { bg: '#0f2340', block: '#173055', street: '#21406b' };
+
+const blobs = [
+    { cx: 120, cy: 90, r: 70, o: 0.85 },
+    { cx: 250, cy: 150, r: 55, o: 0.7 },
+    { cx: 330, cy: 70, r: 40, o: 0.55 },
+    { cx: 80, cy: 200, r: 38, o: 0.45 },
+];
+const pins = [
+    [108, 80],
+    [140, 104],
+    [256, 140],
+    [236, 160],
+    [334, 64],
+    [86, 196],
+    [190, 60],
+];
+---
+
+<svg
+    class={className}
+    viewBox="0 0 400 260"
+    preserveAspectRatio="xMidYMid slice"
+    aria-hidden="true"
+    focusable="false"
+    data-heatmap
+>
+    <defs>
+        <radialGradient id={id}>
+            <stop offset="0" stop-color="#dc2626" stop-opacity=".85"></stop>
+            <stop offset=".45" stop-color="#F07D3F" stop-opacity=".55"></stop>
+            <stop offset="1" stop-color="#F2C230" stop-opacity="0"></stop>
+        </radialGradient>
+    </defs>
+    <rect width="400" height="260" fill={colors.bg}></rect>
+    <g fill={colors.block}>
+        <rect x="10" y="10" width="90" height="62" rx="6"></rect>
+        <rect x="118" y="10" width="120" height="62" rx="6"></rect>
+        <rect x="256" y="10" width="134" height="62" rx="6"></rect>
+        <rect x="10" y="90" width="150" height="70" rx="6"></rect>
+        <rect x="178" y="90" width="90" height="70" rx="6"></rect>
+        <rect x="286" y="90" width="104" height="70" rx="6"></rect>
+        <rect x="10" y="178" width="110" height="72" rx="6"></rect>
+        <rect x="138" y="178" width="150" height="72" rx="6"></rect>
+        <rect x="306" y="178" width="84" height="72" rx="6"></rect>
+    </g>
+    <path
+        d="M0 81H400M0 169H400M109 0V81M169 81V169M247 0V81M277 81V169M129 169V260M297 169V260"
+        stroke={colors.street}
+        stroke-width="10"
+    ></path>
+    <g data-heat>
+        {blobs.map((b) => (
+            <circle
+                cx={b.cx}
+                cy={b.cy}
+                r={b.r}
+                fill={`url(#${id})`}
+                opacity={b.o}
+            />
+        ))}
+    </g>
+    {polygon && (
+        <path
+            d="M60 40L200 30L210 130L70 150Z"
+            fill="#1d4677"
+            fill-opacity=".08"
+            stroke="#1d4677"
+            stroke-width="2.5"
+            stroke-dasharray="7 6"
+            data-polygon
+        />
+    )}
+    <g>
+        {pins.map(([x, y]) => (
+            <g transform={`translate(${x} ${y})`} data-map-pin>
+                <circle r="7" fill="#F07D3F" stroke="#fff" stroke-width="2.5" />
+            </g>
+        ))}
+    </g>
+</svg>

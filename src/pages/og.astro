@@ -1,0 +1,34 @@
+---
+import CityScape from '@/components/art/CityScape.astro';
+import Logo from '@/components/ui/Logo.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+/**
+ * Arte da imagem de compartilhamento (Open Graph, 1200×630). Não é uma página
+ * pública: o script `npm run assets:export` captura esta tela em
+ * public/og/vozcidada-og.png.
+ */
+---
+
+<BaseLayout title="OG" path="/og" noindex>
+    <div class="@container relative isolate flex h-[630px] w-[1200px] flex-col justify-center overflow-hidden bg-[linear-gradient(180deg,#041c3b_0%,#0c2a4d_45%,#1d4677_80%,#3b5683_100%)] px-20 text-white">
+        <div class="absolute inset-x-0 bottom-[6%] -z-10 h-[60%] bg-[radial-gradient(ellipse_at_50%_100%,rgb(240_125_63/0.4),transparent_62%)]"></div>
+        <CityScape time="dusk" class="-z-10 h-[34%]" />
+        <Logo
+            class="mb-10 text-white"
+            markClass="h-14 w-auto"
+            textClass="text-[2.4rem]"
+        />
+        <p class="text-[4.1rem] leading-[1.02] font-extrabold tracking-[-0.03em]">
+            O cidadão fala.
+            <br />A prefeitura resolve.
+            <br />
+            <span class="bg-[linear-gradient(90deg,#F07D3F,#F2C230)] bg-clip-text text-transparent">
+                A cidade vê.
+            </span>
+        </p>
+        <p class="mt-6 text-[1.45rem] font-semibold text-white/80">
+            Zeladoria urbana inteligente para prefeituras
+        </p>
+    </div>
+</BaseLayout>

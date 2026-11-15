@@ -1,0 +1,59 @@
+---
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import WhatsAppIcon from '@/components/ui/WhatsAppIcon.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { site, whatsappLink } from '@/lib/site';
+
+const whatsapp = whatsappLink('obrigado');
+---
+
+<PageLayout title="Pedido recebido" noindex path="/obrigado">
+    <div class="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
+        <span class="flex size-16 items-center justify-center rounded-full bg-green-500 text-white">
+            <Icon name="check" class="size-8" strokeWidth={3} />
+        </span>
+        <h1 class="text-title font-extrabold text-navy-900">
+            Pedido recebido!
+        </h1>
+        <p class="text-lead text-muted">
+            Obrigado pelo interesse no VozCidadã. Nossa equipe vai entrar em
+            contato pelo WhatsApp informado para combinar o melhor horário da
+            demonstração.
+        </p>
+        <ol class="grid w-full gap-3 text-left sm:grid-cols-3">
+            {[
+                'Confirmamos seus dados e o melhor horário.',
+                'Preparamos a demonstração para a realidade da sua cidade.',
+                'Em 30 minutos, você vê o fluxo completo funcionando.',
+            ].map((text, index) => (
+                <li class="card flex flex-col gap-2 p-4 text-sm text-muted">
+                    <b class="text-navy-900">Passo {index + 1}</b>
+                    {text}
+                </li>
+            ))}
+        </ol>
+        <div class="flex flex-wrap justify-center gap-3">
+            <Button href="/apresentacao" variant="secondary">
+                <Icon name="play" class="size-4" /> Rever a apresentação
+            </Button>
+            <Button
+                href={site.deckPdfPath}
+                variant="secondary"
+                track="pdf_download:obrigado"
+            >
+                <Icon name="download" class="size-4" /> Baixar em PDF
+            </Button>
+            {whatsapp && (
+                <Button
+                    href={whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    track="whatsapp_click:obrigado"
+                >
+                    <WhatsAppIcon class="size-5" /> Falar agora no WhatsApp
+                </Button>
+            )}
+        </div>
+    </div>
+</PageLayout>

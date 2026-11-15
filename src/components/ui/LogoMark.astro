@@ -1,0 +1,56 @@
+---
+/**
+ * Símbolo do VozCidadã redesenhado em vetor a partir do ícone do app
+ * (vozcidada-app/assets/images/icon.png): microfone em traço, três ondas
+ * laranja e os pontos verde e amarelo na ponta da onda externa.
+ *
+ * O microfone usa `currentColor` (branco no escuro, navy no claro).
+ * As ondas têm `data-wave` para animação.
+ */
+interface Props {
+    class?: string;
+    title?: string;
+    animated?: boolean;
+}
+
+const {
+    class: className = 'h-8 w-auto',
+    title,
+    animated = false,
+} = Astro.props;
+---
+
+<svg
+    class={className}
+    viewBox="232 196 612 680"
+    xmlns="http://www.w3.org/2000/svg"
+    role={title ? 'img' : undefined}
+    aria-label={title}
+    aria-hidden={title ? undefined : 'true'}
+    focusable="false"
+>
+    <g
+        fill="none"
+        stroke="currentColor"
+        stroke-width="44"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    >
+        <rect x="370" y="254" width="140" height="312" rx="70"></rect>
+        <path d="M264 516C282 628 356 690 440 690C500 690 552 660 582 600"></path>
+        <path d="M440 690V844"></path>
+    </g>
+    <g
+        fill="none"
+        stroke="#F07D3F"
+        stroke-width="42"
+        stroke-linecap="round"
+        class={animated ? 'animate-voice' : undefined}
+    >
+        <path data-wave d="M602 342A100 100 0 0 1 602 518"></path>
+        <path data-wave d="M649 279A178 178 0 0 1 649 581"></path>
+        <path data-wave d="M710 224A258 258 0 0 1 721 628"></path>
+    </g>
+    <circle cx="700" cy="646" r="22" fill="#3BA55C"></circle>
+    <circle cx="719" cy="628" r="22" fill="#F2C230"></circle>
+</svg>

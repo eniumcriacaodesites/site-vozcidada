@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import PendingNote from '@/components/ui/PendingNote.astro';
+import { slideAnchor } from '@/lib/slides';
+
+/**
+ * Invólucro de todo slide: âncora, tema (claro/escuro), metadados para a
+ * navegação/progresso e o container (`@container`) que permite o mesmo
+ * layout servir à landing e ao palco 1920×1080 do Modo Apresentação.
+ */
+interface Props {
+    slide: CollectionEntry<'slides'>;
+    class?: string;
+    bodyClass?: string;
+    /** Nome da cena de movimento (carregada sob demanda). */
+    scene?: string;
+}
+
+const { slide, class: className = '', bodyClass = '', scene } = Astro.props;
+const anchor = slideAnchor(slide.id);
+const { theme, order, navLabel, pending } = slide.data;
+---
+
+<section
+    id={anchor}
+    class:list={[
+        'slide',
+        theme === 'dark' ? 'bg-navy-950 text-white' : 'bg-paper text-text',
+        className,
+    ]}
+    data-theme={theme}
+    data-slide={anchor}
+    data-slide-order={order}
+    data-nav-label={navLabel}
+    data-deck={slide.data.deck}
+    data-scene={scene}
+    aria-labelledby={`${anchor}-title`}
+>
+    <PendingNote items={pending} />
+    <!-- Camadas de fundo (céu, cidade): ancoradas na seção inteira. -->
+    <slot name="bg" />
+    <div class:list={['slide-body @container relative w-full', bodyClass]}>
+        <slot />
+    </div>
+</section>

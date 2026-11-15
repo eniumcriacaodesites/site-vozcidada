@@ -1,0 +1,138 @@
+---
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import Logo from '@/components/ui/Logo.astro';
+
+/**
+ * Cabeçalho fixo: transparente sobre a capa, vidro escuro após rolar.
+ * Inclui o botão "Pausar animações" (WCAG 2.2.2) e o menu mobile acessível.
+ */
+const links = [
+    { href: '#como-funciona', label: 'Como funciona' },
+    { href: '#ia', label: 'Inteligência artificial' },
+    { href: '#painel', label: 'Painel' },
+    { href: '#case', label: 'Case' },
+    { href: '#perguntas', label: 'Perguntas' },
+];
+---
+
+<header
+    class="group/header fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300 data-[scrolled]:bg-navy-950/85 data-[scrolled]:shadow-[0_1px_0_rgb(255_255_255/0.08)] data-[scrolled]:backdrop-blur-md"
+    data-header
+>
+    <div class="container-site flex h-16 items-center gap-4 text-white lg:h-18">
+        <a
+            href="/"
+            class="mr-auto shrink-0 rounded-lg"
+            aria-label="VozCidadã — início"
+        >
+            <Logo markClass="h-8 w-auto shrink-0" textClass="text-[1.2rem]" />
+        </a>
+
+        <nav aria-label="Principal" class="hidden xl:block">
+            <ul class="flex items-center gap-1 text-[0.92rem] font-semibold">
+                {links.map((link) => (
+                    <li>
+                        <a
+                            href={link.href}
+                            class="rounded-full px-3 py-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                        >
+                            {link.label}
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </nav>
+
+        <button
+            type="button"
+            class="hidden size-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white md:flex"
+            aria-pressed="false"
+            aria-label="Pausar animações"
+            title="Pausar animações"
+            data-motion-toggle
+        >
+            <span class="contents [[aria-pressed=true]_&]:hidden">
+                <Icon name="pause" class="size-5" />
+            </span>
+            <span class="hidden [[aria-pressed=true]_&]:contents">
+                <Icon name="play" class="size-5" />
+            </span>
+        </button>
+        <a
+            href="/apresentacao"
+            class="hidden items-center gap-2 rounded-full px-3 py-2 text-[0.92rem] font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white md:inline-flex"
+            data-track="presentation_start:header"
+        >
+            <Icon name="presentation" class="size-4" /> Apresentar
+        </a>
+        <Button
+            href="#contato"
+            class="h-10! px-4! text-sm max-sm:hidden!"
+            track="cta_click:header"
+        >
+            Agendar demonstração
+        </Button>
+
+        <button
+            type="button"
+            class="flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10 xl:hidden"
+            aria-expanded="false"
+            aria-controls="menu-mobile"
+            aria-label="Abrir menu"
+            data-menu-button
+        >
+            <Icon name="menu" class="size-6" />
+        </button>
+    </div>
+
+    <div
+        id="menu-mobile"
+        class="hidden border-t border-white/10 bg-navy-950/95 backdrop-blur-md data-[open]:block xl:hidden!"
+        data-menu
+    >
+        <nav aria-label="Menu" class="container-site py-4">
+            <ul class="flex flex-col gap-1 text-lg font-semibold text-white">
+                {links.map((link) => (
+                    <li>
+                        <a
+                            href={link.href}
+                            class="block rounded-xl px-3 py-3 hover:bg-white/10"
+                            data-menu-link
+                        >
+                            {link.label}
+                        </a>
+                    </li>
+                ))}
+                <li>
+                    <a
+                        href="/apresentacao"
+                        class="flex items-center gap-2 rounded-xl px-3 py-3 hover:bg-white/10"
+                        data-menu-link
+                    >
+                        <Icon name="presentation" class="size-5" /> Modo
+                        apresentação
+                    </a>
+                </li>
+                <li>
+                    <button
+                        type="button"
+                        class="flex w-full items-center gap-2 rounded-xl px-3 py-3 text-left hover:bg-white/10"
+                        aria-pressed="false"
+                        data-motion-toggle
+                    >
+                        <Icon name="pause" class="size-5" /> Pausar animações
+                    </button>
+                </li>
+            </ul>
+            <a
+                href="#contato"
+                class="mt-3 flex h-12 items-center justify-center rounded-full bg-orange-500 font-bold text-navy-950"
+                data-menu-link
+                data-track="cta_click:menu"
+            >
+                Agendar demonstração
+            </a>
+        </nav>
+    </div>
+</header>

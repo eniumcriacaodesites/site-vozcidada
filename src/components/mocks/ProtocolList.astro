@@ -1,0 +1,75 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
+
+/**
+ * Lista de protocolos organizados (momento "caos → ordem" do slide 4).
+ * Cada linha vem do frontmatter no formato "título|endereço|prioridade".
+ */
+interface Props {
+    rows: string[];
+}
+
+const { rows } = Astro.props;
+
+const iconFor = (title: string): IconName => {
+    const t = title.toLowerCase();
+    if (t.includes('poste') || t.includes('lâmpada')) return 'lightbulb';
+    if (t.includes('lixo')) return 'trash-2';
+    if (t.includes('galho') || t.includes('poda')) return 'tree-deciduous';
+    if (t.includes('placa')) return 'signpost';
+    return 'construction';
+};
+
+const priorityClass: Record<string, string> = {
+    Alta: 'bg-orange-100 text-orange-700',
+    Média: 'bg-navy-100 text-navy-900',
+    Baixa: 'bg-paper text-muted',
+};
+
+const parsed = rows.map((row, index) => {
+    const [title = '', address = '', priority = 'Média'] = row.split('|');
+    return {
+        protocol: `#${String(42 + index).padStart(4, '0')}`,
+        title,
+        address,
+        priority,
+        icon: iconFor(title),
+    };
+});
+---
+
+<ul class="divide-y divide-line text-[0.78rem]" data-protocols>
+    {parsed.map((row) => (
+        <li
+            class="grid grid-cols-[auto_1fr_auto] items-center gap-3 bg-white px-4 py-3"
+            data-protocol
+        >
+            <span class="flex size-9 items-center justify-center rounded-xl bg-navy-100 text-navy-900">
+                <Icon name={row.icon} class="size-4" />
+            </span>
+            <span class="min-w-0">
+                <span class="block truncate font-bold">
+                    <span class="text-muted">{row.protocol}</span> · {row.title}
+                </span>
+                <span class="flex items-center gap-2 text-[0.68rem] text-muted">
+                    <span class="truncate">{row.address}</span>
+                    <span class="inline-flex items-center gap-0.5 text-success">
+                        <Icon name="camera" class="size-3" /> foto
+                    </span>
+                    <span class="inline-flex items-center gap-0.5 text-success">
+                        <Icon name="map-pin" class="size-3" /> GPS
+                    </span>
+                </span>
+            </span>
+            <span
+                class:list={[
+                    'rounded-full px-2.5 py-1 text-[0.65rem] font-bold',
+                    priorityClass[row.priority] ?? priorityClass['Média'],
+                ]}
+            >
+                {row.priority}
+            </span>
+        </li>
+    ))}
+</ul>

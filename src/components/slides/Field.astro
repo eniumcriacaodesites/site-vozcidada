@@ -1,0 +1,50 @@
+---
+import PdfDossier from '@/components/mocks/PdfDossier.astro';
+import WorkOrders from '@/components/mocks/WorkOrders.astro';
+import BeforeAfter from '@/components/ui/BeforeAfter.astro';
+import BrowserFrame from '@/components/ui/BrowserFrame.astro';
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S09 · Campo e prova de execução — antes/depois arrastável + O.S. + dossiê. */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection slide={slide}>
+    <div class="container-site grid items-center gap-12 @5xl:grid-cols-[0.95fr_1.05fr]">
+        <div class="flex flex-col gap-9">
+            <SectionHeader
+                kicker={kicker}
+                title={title}
+                id={`${anchor}-title`}
+            />
+            <FeatureGrid items={items} variant="list" />
+        </div>
+        <div class="relative flex flex-col gap-5" data-reveal>
+            <BeforeAfter />
+            <p class="text-center text-xs text-ink-muted">
+                Arraste para comparar · ilustração
+            </p>
+            <div class="grid grid-cols-[1fr_9rem] items-end gap-4">
+                <BrowserFrame
+                    url="painel.suaprefeitura.gov.br/ordens-de-servico"
+                    class="[zoom:0.7] @3xl:[zoom:0.85] @5xl:[zoom:1]"
+                    label="Quadro de ordens de serviço"
+                >
+                    <WorkOrders />
+                </BrowserFrame>
+                <PdfDossier class="rotate-3" />
+            </div>
+        </div>
+    </div>
+</SlideSection>

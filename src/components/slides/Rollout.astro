@@ -1,0 +1,61 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S15 · Implantação — linha do tempo (horizontal no largo, vertical no estreito). */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items, footnote } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection slide={slide} scene="timeline">
+    <div class="container-site flex flex-col gap-14">
+        <SectionHeader kicker={kicker} title={title} id={`${anchor}-title`} />
+        <ol class="relative grid gap-8 @5xl:grid-cols-5 @5xl:gap-6">
+            <span
+                class="absolute top-0 bottom-0 left-[1.6rem] w-1 rounded-full bg-line @5xl:top-[1.6rem] @5xl:right-[10%] @5xl:bottom-auto @5xl:left-[10%] @5xl:h-1 @5xl:w-auto"
+                aria-hidden="true"
+            >
+                <i
+                    class="block h-full w-full origin-top rounded-full bg-orange-500 @5xl:origin-left"
+                    data-timeline-progress
+                ></i>
+            </span>
+            {items.map((item, index) => (
+                <li
+                    class="relative flex gap-5 @5xl:flex-col @5xl:items-center @5xl:text-center"
+                    data-reveal
+                    data-build={index + 1}
+                >
+                    <span class="relative z-10 flex size-13 shrink-0 items-center justify-center rounded-2xl bg-navy-900 text-white ring-8 ring-paper">
+                        {item.icon && <Icon name={item.icon} class="size-6" />}
+                    </span>
+                    <span class="flex flex-col gap-1.5 pt-1">
+                        <span class="text-xs font-extrabold tracking-widest text-accent-text">
+                            ETAPA {index + 1}
+                        </span>
+                        <span class="text-[1.1rem] font-bold text-ink">
+                            {item.title}
+                        </span>
+                        <span class="text-[0.95rem] text-ink-muted">
+                            {item.text}
+                        </span>
+                    </span>
+                </li>
+            ))}
+        </ol>
+        {footnote && (
+            <p class="text-sm text-ink-muted" data-reveal>
+                {footnote}
+            </p>
+        )}
+    </div>
+</SlideSection>

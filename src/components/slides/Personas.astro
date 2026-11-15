@@ -1,0 +1,35 @@
+---
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/**
+ * S12 · Para quem — grade de 6 perfis (todo o conteúdo visível, sem abas:
+ * mais fácil de escanear e funciona sem JS e no deck).
+ */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection slide={slide}>
+    <div class="container-site flex flex-col gap-12">
+        <SectionHeader
+            kicker={kicker}
+            title={title}
+            align="center"
+            id={`${anchor}-title`}
+        />
+        <FeatureGrid
+            items={items}
+            columns="@3xl:grid-cols-2 @6xl:grid-cols-3"
+        />
+    </div>
+</SlideSection>

@@ -1,0 +1,97 @@
+---
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import Icon from '@/components/ui/Icon.astro';
+import WhatsAppIcon from '@/components/ui/WhatsAppIcon.astro';
+import type { IconName } from '@/lib/icons';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S02 · O problema — pedidos espalhados por canais informais ("caos"). */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, cards, closing } = slide.data;
+const anchor = slideAnchor(slide.id);
+
+const icons: (IconName | 'whatsapp')[] = [
+    'whatsapp',
+    'phone',
+    'message-circle',
+    'file-text',
+    'user-round',
+    'mail',
+];
+// Posições do "caos" (só em containers largos; no estreito vira grade).
+const spots = [
+    'left-[2%] top-[4%] -rotate-6',
+    'left-[46%] top-[0%] rotate-3',
+    'left-[16%] top-[34%] rotate-2',
+    'left-[56%] top-[30%] -rotate-3',
+    'left-[0%] top-[66%] rotate-4',
+    'left-[44%] top-[64%] -rotate-2',
+];
+---
+
+<SlideSection
+    slide={slide}
+    class="grain bg-[radial-gradient(ellipse_at_80%_10%,#133760_0%,#071a33_55%)]"
+    scene="chaos"
+>
+    <div class="container-site grid items-center gap-12 @5xl:grid-cols-[0.95fr_1.05fr]">
+        <SectionHeader kicker={kicker} title={title} id={`${anchor}-title`} />
+
+        <div
+            class="relative grid gap-3 @md:grid-cols-2 @5xl:block @5xl:h-[26rem]"
+            data-chaos
+        >
+            {cards.map((card, index) => (
+                <div
+                    class:list={[
+                        'glass flex items-center gap-3 rounded-2xl px-4 py-3.5 text-[0.95rem] font-semibold text-white/90 @5xl:absolute @5xl:w-[44%]',
+                        spots[index % spots.length],
+                    ]}
+                    data-chaos-card
+                    data-depth={String(0.1 + (index % 3) * 0.08)}
+                    data-build={index + 1}
+                >
+                    <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white/80">
+                        {icons[index] === 'whatsapp' ? (
+                            <WhatsAppIcon class="size-5" />
+                        ) : (
+                            <Icon
+                                name={icons[index] as IconName}
+                                class="size-5"
+                            />
+                        )}
+                    </span>
+                    <span class="flex flex-col">
+                        {card}
+                        <span class="text-xs font-medium text-white/50">
+                            sem número · sem retorno
+                        </span>
+                    </span>
+                </div>
+            ))}
+        </div>
+    </div>
+
+    <div class="container-site mt-14">
+        <ul
+            class="flex flex-wrap gap-x-6 gap-y-3 border-t border-white/10 pt-8 text-[clamp(1.05rem,0.9rem+0.8cqi,1.5rem)] font-bold"
+            data-build={cards.length + 1}
+        >
+            {closing.map((line) => (
+                <li class="flex items-center gap-2 text-white" data-reveal>
+                    <span class="flex size-6 items-center justify-center rounded-full bg-orange-500/20 text-orange-500">
+                        <Icon name="x" class="size-4" strokeWidth={3} />
+                    </span>
+                    {line}
+                </li>
+            ))}
+        </ul>
+    </div>
+</SlideSection>

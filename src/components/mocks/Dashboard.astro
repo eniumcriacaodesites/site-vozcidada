@@ -1,0 +1,93 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+
+import HeatMap from './HeatMap.astro';
+
+/**
+ * Painel do gestor (números ILUSTRATIVOS — o rodapé do slide avisa).
+ * `data-count-to` anima os contadores; `data-bar` anima as barras.
+ */
+const kpis = [
+    { label: 'Pedidos no período', value: 312, delta: '+12%', up: true },
+    { label: 'Resolvidos', value: 247, delta: '+18%', up: true },
+    { label: 'Pendentes', value: 23, delta: '−9%', up: false },
+];
+const bars = [
+    { label: 'Iluminação', value: 92 },
+    { label: 'Buracos', value: 78 },
+    { label: 'Lixo', value: 55 },
+    { label: 'Poda', value: 41 },
+    { label: 'Sinalização', value: 24 },
+];
+---
+
+<div class="grid grid-cols-[1.35fr_1fr] gap-3 bg-paper p-3 text-[0.72rem]">
+    <div class="space-y-3">
+        <div class="grid grid-cols-3 gap-2">
+            {kpis.map((kpi) => (
+                <div class="rounded-xl bg-white p-2.5 ring-1 ring-line">
+                    <p class="text-[0.6rem] font-bold text-muted">
+                        {kpi.label}
+                    </p>
+                    <p
+                        class="tabular text-[1.35rem] leading-tight font-extrabold"
+                        data-count-to={kpi.value}
+                    >
+                        {kpi.value}
+                    </p>
+                    <p
+                        class:list={[
+                            'text-[0.6rem] font-bold',
+                            kpi.up ? 'text-success' : 'text-[#b45309]',
+                        ]}
+                    >
+                        {kpi.delta} vs. período anterior
+                    </p>
+                </div>
+            ))}
+        </div>
+        <div class="rounded-xl bg-white p-3 ring-1 ring-line">
+            <p class="mb-2 font-extrabold">Pedidos por categoria</p>
+            <ul class="space-y-1.5">
+                {bars.map((bar) => (
+                    <li class="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-2">
+                        <span class="text-[0.62rem] text-muted">
+                            {bar.label}
+                        </span>
+                        <span class="h-2.5 overflow-hidden rounded-full bg-paper">
+                            <i
+                                class="block h-full origin-left rounded-full bg-[linear-gradient(90deg,#1d4677,#5b8fd0)]"
+                                style={`width:${bar.value}%`}
+                                data-bar
+                            />
+                        </span>
+                        <span class="tabular text-right text-[0.62rem] font-bold">
+                            {bar.value}
+                        </span>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    </div>
+    <div class="space-y-3">
+        <div class="relative h-36 overflow-hidden rounded-xl ring-1 ring-line">
+            <HeatMap />
+            <span class="absolute bottom-2 left-2 rounded-md bg-white/90 px-2 py-0.5 text-[0.6rem] font-bold">
+                Mapa de calor
+            </span>
+        </div>
+        <div
+            class="space-y-1.5 rounded-xl bg-navy-900 p-3 text-white"
+            data-insight
+        >
+            <p class="flex items-center gap-1.5 text-[0.65rem] font-bold text-orange-300">
+                <Icon name="lightbulb" class="size-3.5" /> Insight da IA
+            </p>
+            <p class="text-[0.68rem] leading-relaxed text-white/90">
+                Pedidos de iluminação cresceram no Centro e no São José.
+                Prioridade: vias de acesso às escolas. Recomendação: mutirão de
+                troca de lâmpadas.
+            </p>
+        </div>
+    </div>
+</div>

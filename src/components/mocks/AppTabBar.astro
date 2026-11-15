@@ -1,0 +1,53 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
+
+/** Barra de abas do app (Início, Demandas, +, Avisos, Perfil). */
+interface Props {
+    active?: 'inicio' | 'demandas' | 'avisos' | 'perfil';
+}
+
+const { active = 'inicio' } = Astro.props;
+
+const tabs: { id: string; label: string; icon: IconName }[] = [
+    { id: 'inicio', label: 'Início', icon: 'landmark' },
+    { id: 'demandas', label: 'Demandas', icon: 'file-text' },
+    { id: 'avisos', label: 'Avisos', icon: 'bell-ring' },
+    { id: 'perfil', label: 'Perfil', icon: 'user-round' },
+];
+---
+
+<div class="absolute inset-x-0 bottom-0 flex h-14 items-center justify-around border-t border-line bg-white px-2 pb-1">
+    {tabs.slice(0, 2).map((tab) => (
+        <span
+            class:list={[
+                'flex flex-col items-center gap-0.5 text-[0.55rem] font-bold',
+                tab.id === active ? 'text-orange-700' : 'text-muted',
+            ]}
+        >
+            <Icon name={tab.icon} class="size-4" />
+            {tab.label}
+        </span>
+    ))}
+    <span class="-mt-6 flex size-11 items-center justify-center rounded-full bg-orange-500 text-white shadow-[0_8px_18px_-6px_rgb(240_125_63/0.8)] ring-4 ring-white">
+        <svg viewBox="0 0 24 24" class="size-6" aria-hidden="true">
+            <path
+                d="M12 5v14M5 12h14"
+                stroke="currentColor"
+                stroke-width="2.6"
+                stroke-linecap="round"
+            ></path>
+        </svg>
+    </span>
+    {tabs.slice(2).map((tab) => (
+        <span
+            class:list={[
+                'flex flex-col items-center gap-0.5 text-[0.55rem] font-bold',
+                tab.id === active ? 'text-orange-700' : 'text-muted',
+            ]}
+        >
+            <Icon name={tab.icon} class="size-4" />
+            {tab.label}
+        </span>
+    ))}
+</div>

@@ -1,0 +1,28 @@
+---
+/** Barra de status do celular (decorativa). */
+interface Props {
+    tone?: 'light' | 'dark';
+}
+
+const { tone = 'light' } = Astro.props;
+---
+
+<div
+    class:list={[
+        'flex h-9 items-end justify-between px-6 pb-1 text-[0.68rem] font-bold',
+        tone === 'light' ? 'text-white' : 'text-text',
+    ]}
+>
+    <span>9:41</span>
+    <span class="flex items-center gap-1" aria-hidden="true">
+        <span class="flex items-end gap-px">
+            <i class="block h-1.5 w-0.5 rounded-sm bg-current"></i>
+            <i class="block h-2 w-0.5 rounded-sm bg-current"></i>
+            <i class="block h-2.5 w-0.5 rounded-sm bg-current"></i>
+            <i class="block h-3 w-0.5 rounded-sm bg-current"></i>
+        </span>
+        <span class="ml-1 h-2.5 w-5 rounded-[3px] border border-current p-px">
+            <i class="block h-full w-3/4 rounded-[1px] bg-current"></i>
+        </span>
+    </span>
+</div>

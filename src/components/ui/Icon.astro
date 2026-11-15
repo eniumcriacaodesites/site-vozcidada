@@ -1,0 +1,36 @@
+---
+/**
+ * Ícone Lucide inline (SVG estático, zero JS). Decorativo por padrão;
+ * passe `label` quando o ícone carregar significado sozinho.
+ */
+import { icons, type IconName } from '@/lib/icons';
+
+interface Props {
+    name: IconName;
+    class?: string;
+    label?: string;
+    strokeWidth?: number;
+}
+
+const {
+    name,
+    class: className = 'size-5',
+    label,
+    strokeWidth = 2,
+} = Astro.props;
+
+const raw = icons[name]
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/\sclass="[^"]*"/, '')
+    .replace(/\swidth="24"/, '')
+    .replace(/\sheight="24"/, '')
+    .replace(/stroke-width="2"/, `stroke-width="${strokeWidth}"`);
+
+const a11y = label
+    ? `role="img" aria-label="${label.replace(/"/g, '&quot;')}"`
+    : 'aria-hidden="true" focusable="false"';
+
+const svg = raw.replace('<svg', `<svg class="${className}" ${a11y}`);
+---
+
+<Fragment set:html={svg} />

@@ -1,0 +1,120 @@
+---
+import { uid as nextUid } from '@/lib/uid';
+
+/**
+ * Ilustração de rua (antes: buraco; depois: recapeada e sinalizada).
+ * Substitui as imagens geradas por IA do repositório antigo, que tinham marca
+ * d'água e marcas de terceiros. Trocar por fotos reais autorizadas de Glória
+ * quando disponíveis.
+ */
+interface Props {
+    state?: 'before' | 'after';
+    class?: string;
+    title?: string;
+}
+
+const {
+    state = 'before',
+    class: className = 'h-full w-full',
+    title,
+} = Astro.props;
+const uid = nextUid(`st-${state}`);
+---
+
+<svg
+    class={className}
+    viewBox="0 0 400 300"
+    preserveAspectRatio="xMidYMid slice"
+    role={title ? 'img' : undefined}
+    aria-label={title}
+    aria-hidden={title ? undefined : 'true'}
+    focusable="false"
+>
+    <defs>
+        <linearGradient id={`${uid}-asphalt`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4f555d"></stop>
+            <stop offset="1" stop-color="#3b4047"></stop>
+        </linearGradient>
+        <radialGradient id={`${uid}-hole`} cx=".5" cy=".45" r=".6">
+            <stop offset="0" stop-color="#1c1f24"></stop>
+            <stop offset=".7" stop-color="#2b3036"></stop>
+            <stop offset="1" stop-color="#5b616a"></stop>
+        </radialGradient>
+    </defs>
+
+    <!-- calçada e meio-fio -->
+    <rect width="400" height="300" fill={`url(#${uid}-asphalt)`}></rect>
+    <rect width="400" height="74" fill="#c7ccd3"></rect>
+    <path
+        d="M0 18H400M0 46H400M40 0V74M120 0V74M200 0V74M280 0V74M360 0V74"
+        stroke="#b4bac2"
+        stroke-width="2"
+    ></path>
+    <rect y="70" width="400" height="10" fill="#9aa1aa"></rect>
+    <circle cx="330" cy="30" r="26" fill="#4f8a5b" opacity=".85"></circle>
+    <rect x="326" y="40" width="8" height="34" fill="#6b4f3a"></rect>
+
+    <!-- faixa central -->
+    <path
+        d="M-10 214H410"
+        stroke="#f2c230"
+        stroke-width="7"
+        stroke-dasharray="44 30"
+    ></path>
+
+    {state === 'before' ? (
+        <g>
+            <path
+                d="M120 150c18-22 64-30 98-20 30 9 52 24 50 44-2 24-40 36-82 34-40-2-76-10-82-28-4-12 6-20 16-30Z"
+                fill={`url(#${uid}-hole)`}
+            />
+            <path
+                d="M148 168c20-8 52-8 74 2-8 10-30 14-48 12-12-2-22-6-26-14Z"
+                fill="#3d5a73"
+                opacity=".85"
+            />
+            <path
+                d="M152 166c14-4 30-4 44 0"
+                stroke="#8fb3d1"
+                stroke-width="2"
+                opacity=".6"
+                fill="none"
+            />
+            <path
+                d="M106 168l-26 12M98 150l-30-8M270 170l30 10M262 150l26-16M190 210l-6 26M228 206l14 22"
+                stroke="#2a2e33"
+                stroke-width="3"
+                stroke-linecap="round"
+                fill="none"
+            />
+            <g fill="#6f757d">
+                <circle cx="96" cy="196" r="4" />
+                <circle cx="282" cy="196" r="5" />
+                <circle cx="300" cy="140" r="3" />
+                <circle cx="86" cy="132" r="3" />
+            </g>
+        </g>
+    ) : (
+        <g>
+            <path
+                d="M108 136H292V226H108Z"
+                fill="#30353b"
+                stroke="#262a2f"
+                stroke-width="3"
+            />
+            <path
+                d="M108 214H292"
+                stroke="#f2c230"
+                stroke-width="7"
+                stroke-dasharray="44 30"
+                stroke-dashoffset="-20"
+            />
+            <g transform="translate(318 150)">
+                <path d="M-18 56H18L10 52H-10Z" fill="#1f2328" />
+                <path d="M-10 52L0 0L10 52Z" fill="#F07D3F" />
+                <path d="M-6.5 34H6.5L5 26H-5Z" fill="#fff" />
+                <path d="M-3.5 18H3.5L2.6 12H-2.6Z" fill="#fff" />
+            </g>
+        </g>
+    )}
+</svg>

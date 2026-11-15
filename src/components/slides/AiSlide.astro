@@ -1,0 +1,69 @@
+---
+import TriageCard from '@/components/mocks/TriageCard.astro';
+import Button from '@/components/ui/Button.astro';
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import type { IconName } from '@/lib/icons';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S07 · IA com humano no comando (diferencial) — cena "ai-scan". */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide, mode = 'web' } = Astro.props;
+const { kicker, title, items, closing } = slide.data;
+const anchor = slideAnchor(slide.id);
+const closingIcons: IconName[] = ['user-check', 'chart-line', 'life-buoy'];
+---
+
+<SlideSection
+    slide={slide}
+    class="grain bg-[radial-gradient(ellipse_at_85%_30%,#1d4677_0%,#05254d_58%)]"
+    scene="ai-scan"
+>
+    <div class="container-site flex flex-col gap-12">
+        <div class="grid items-center gap-12 @5xl:grid-cols-[1.15fr_0.85fr]">
+            <div class="flex flex-col gap-9">
+                <SectionHeader
+                    kicker={kicker}
+                    title={title}
+                    id={`${anchor}-title`}
+                />
+                <FeatureGrid items={items} columns="@3xl:grid-cols-2" />
+            </div>
+            <TriageCard class="mx-auto w-full max-w-[26rem]" />
+        </div>
+        <ul
+            class="grid gap-4 border-t border-white/10 pt-8 @4xl:grid-cols-3"
+            data-build={items.length + 1}
+        >
+            {closing.map((line, index) => (
+                <li
+                    class="flex items-start gap-3 text-[1.02rem] font-semibold text-white/90"
+                    data-reveal
+                >
+                    <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-orange-500 text-navy-950">
+                        <Icon
+                            name={closingIcons[index] ?? 'check'}
+                            class="size-4"
+                        />
+                    </span>
+                    {line}
+                </li>
+            ))}
+        </ul>
+        {mode === 'web' && (
+            <div class="flex flex-wrap items-center gap-3">
+                <Button href="#contato" track="cta_click:ia" magnetic>
+                    Ver a IA funcionando na demonstração
+                    <Icon name="arrow-right" class="size-4" />
+                </Button>
+            </div>
+        )}
+    </div>
+</SlideSection>

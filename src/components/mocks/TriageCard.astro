@@ -1,0 +1,117 @@
+---
+import StreetScene from '@/components/art/StreetScene.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+/**
+ * Cartão de triagem com as evidências da IA (motor de verificação real:
+ * GPS da foto × local, autenticidade, categoria, urgência 1–5, repetidos,
+ * confiabilidade 0–100). A decisão é sempre do servidor.
+ */
+interface Props {
+    class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div
+    class:list={[
+        'overflow-hidden rounded-panel bg-white text-text shadow-lift ring-1 ring-line',
+        className,
+    ]}
+    data-triage
+>
+    <div class="relative h-40 overflow-hidden">
+        <StreetScene state="before" />
+        <span
+            class="absolute inset-x-0 top-0 h-16 -translate-y-full bg-[linear-gradient(to_bottom,transparent,rgb(240_125_63/0.45))] shadow-[0_6px_14px_rgb(240_125_63/0.6)]"
+            data-scanline
+            aria-hidden="true"
+        ></span>
+        <span class="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-navy-950/80 px-2.5 py-1 text-[0.7rem] font-bold text-white backdrop-blur">
+            <Icon name="sparkles" class="size-3.5 text-orange-500" /> Análise da
+            IA
+        </span>
+    </div>
+    <div class="space-y-3 p-4">
+        <div class="flex items-start justify-between gap-3">
+            <p class="font-extrabold">#0042 · Buraco na via</p>
+            <span class="shrink-0 text-xs text-muted">há 2 min</span>
+        </div>
+        <p class="text-[0.8rem] text-muted">
+            “Buraco grande na frente da escola. Os carros estão desviando pela
+            calçada.” <span class="text-subtle">(áudio transcrito)</span>
+        </p>
+        <ul class="grid grid-cols-2 gap-2 text-[0.72rem] font-semibold">
+            <li
+                class="flex items-center gap-1.5 rounded-lg bg-[#e6f6ec] px-2 py-1.5 text-success"
+                data-badge
+            >
+                <Icon name="map-pin" class="size-3.5" /> Local da foto confere
+            </li>
+            <li
+                class="flex items-center gap-1.5 rounded-lg bg-[#e6f6ec] px-2 py-1.5 text-success"
+                data-badge
+            >
+                <Icon name="badge-check" class="size-3.5" /> Foto original
+            </li>
+            <li
+                class="flex items-center gap-1.5 rounded-lg bg-navy-100 px-2 py-1.5 text-navy-900"
+                data-badge
+            >
+                <Icon name="layers" class="size-3.5" /> Sugestão: Buracos
+            </li>
+            <li
+                class="flex items-center gap-1.5 rounded-lg bg-orange-100 px-2 py-1.5 text-orange-700"
+                data-badge
+            >
+                <span aria-label="Urgência 4 de 5">★★★★☆</span> Urgência
+            </li>
+            <li
+                class="flex items-center gap-1.5 rounded-lg bg-navy-100 px-2 py-1.5 text-navy-900"
+                data-badge
+            >
+                <Icon name="copy-check" class="size-3.5" /> +9 reforços
+            </li>
+            <li
+                class="flex flex-col justify-center gap-1 rounded-lg bg-navy-100 px-2 py-1.5 text-navy-900"
+                data-badge
+            >
+                <span class="flex justify-between">
+                    <span>Confiabilidade</span>
+                    <b class="tabular" data-score>
+                        87
+                    </b>
+                </span>
+                <span class="h-1 overflow-hidden rounded-full bg-white">
+                    <i
+                        class="block h-full w-[87%] rounded-full bg-green-500"
+                        data-score-bar
+                    ></i>
+                </span>
+            </li>
+        </ul>
+        <p
+            class="rounded-lg bg-paper px-3 py-2 text-[0.74rem] text-text"
+            data-badge
+        >
+            <b>Resumo:</b> buraco em via de acesso a escola, com risco para
+            pedestres.
+        </p>
+        <div class="flex gap-2" data-decision>
+            <span
+                class="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-xl bg-navy-900 text-[0.8rem] font-bold text-white"
+                data-approve
+            >
+                <Icon name="check" class="size-4" /> Aprovar
+            </span>
+            <span class="flex h-9 flex-1 items-center justify-center rounded-xl text-[0.8rem] font-bold text-text ring-1 ring-line">
+                Rejeitar com motivo
+            </span>
+        </div>
+        <p class="flex items-center gap-1.5 text-[0.68rem] text-muted">
+            <Icon name="user-check" class="size-3.5" /> Sugestões da IA · a
+            decisão é do servidor
+        </p>
+    </div>
+</div>

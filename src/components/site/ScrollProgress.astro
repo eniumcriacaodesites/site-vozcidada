@@ -1,0 +1,38 @@
+---
+/**
+ * Barra de progresso da leitura. Com suporte a scroll-driven animations,
+ * é 100% CSS; sem suporte, o script de movimento atualiza --progress.
+ */
+---
+
+<div
+    class="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px]"
+    aria-hidden="true"
+>
+    <div
+        class="scroll-progress h-full origin-left bg-[linear-gradient(90deg,#F07D3F,#F2C230)]"
+        data-scroll-progress
+    ></div>
+</div>
+
+<style>
+    .scroll-progress {
+        transform: scaleX(var(--progress, 0));
+    }
+
+    @keyframes progress-grow {
+        from {
+            transform: scaleX(0);
+        }
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @supports (animation-timeline: scroll()) {
+        .scroll-progress {
+            animation: progress-grow linear both;
+            animation-timeline: scroll(root block);
+        }
+    }
+</style>

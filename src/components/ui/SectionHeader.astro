@@ -1,0 +1,64 @@
+---
+/**
+ * Cabeçalho padrão de slide: kicker + título (H2 ou H1) + texto de apoio.
+ * `data-split` liga a revelação por linha do título (cena "reveal").
+ */
+interface Props {
+    kicker?: string;
+    title: string;
+    lead?: string;
+    as?: 'h1' | 'h2';
+    align?: 'left' | 'center';
+    size?: 'display' | 'title';
+    class?: string;
+    id?: string;
+}
+
+const {
+    kicker,
+    title,
+    lead,
+    as: Tag = 'h2',
+    align = 'left',
+    size = 'title',
+    class: className = '',
+    id,
+} = Astro.props;
+---
+
+<header
+    class:list={[
+        'flex flex-col gap-4',
+        align === 'center' && 'mx-auto items-center text-center',
+        className,
+    ]}
+>
+    {kicker && (
+        <p class="kicker" data-reveal>
+            {kicker}
+        </p>
+    )}
+    <Tag
+        id={id}
+        class:list={[
+            'font-extrabold text-ink',
+            size === 'display' ? 'text-display' : 'text-title',
+            align === 'center' ? 'max-w-[22ch]' : 'max-w-[20ch]',
+        ]}
+        data-split
+    >
+        {title}
+    </Tag>
+    {lead && (
+        <p
+            class:list={[
+                'text-lead text-ink-muted',
+                align === 'center' ? 'max-w-[60ch]' : 'max-w-[54ch]',
+            ]}
+            data-reveal
+        >
+            {lead}
+        </p>
+    )}
+    <slot />
+</header>

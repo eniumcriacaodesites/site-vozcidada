@@ -1,0 +1,161 @@
+---
+import { render } from 'astro:content';
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { deckOrder, getSlides } from '@/lib/slides';
+
+/**
+ * Modo apresentador: abrir com a tecla S na apresentação (segunda janela /
+ * segundo monitor). Mostra as notas do slide atual, o próximo slide e o
+ * tempo; os botões controlam a apresentação via BroadcastChannel.
+ */
+const slides = deckOrder(await getSlides());
+const rendered = await Promise.all(
+    slides.map(async (slide) => ({
+        slide,
+        Content: (await render(slide)).Content,
+    })),
+);
+---
+
+<BaseLayout title="Notas do apresentador" path="/apresentacao/notas" noindex>
+    <main class="flex min-h-svh flex-col gap-6 bg-navy-950 p-8 text-white">
+        <header class="flex flex-wrap items-center justify-between gap-4">
+            <p class="text-sm font-bold tracking-widest text-orange-500 uppercase">
+                Modo apresentador
+            </p>
+            <div class="flex items-center gap-6">
+                <span class="tabular text-3xl font-extrabold" data-notes-timer>
+                    00:00
+                </span>
+                <button
+                    type="button"
+                    class="rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold hover:bg-white/15"
+                    data-notes-reset
+                >
+                    Zerar
+                </button>
+            </div>
+        </header>
+
+        <div class="grid flex-1 gap-6 lg:grid-cols-[1.6fr_1fr]">
+            <section
+                class="rounded-3xl bg-white/6 p-8 ring-1 ring-white/12"
+                aria-live="polite"
+            >
+                <p
+                    class="mb-2 text-sm font-bold text-white/60"
+                    data-notes-counter
+                >
+                    —
+                </p>
+                {rendered.map(({ slide, Content }, index) => (
+                    <article data-notes-index={index} hidden={index !== 0}>
+                        <h1 class="mb-5 text-3xl font-extrabold">
+                            {slide.data.title}
+                        </h1>
+                        <div class="notes-body space-y-4 text-2xl leading-relaxed text-white/90">
+                            <Content />
+                        </div>
+                    </article>
+                ))}
+            </section>
+            <aside class="flex flex-col gap-4">
+                <div class="rounded-3xl bg-white/6 p-6 ring-1 ring-white/12">
+                    <p class="mb-2 text-sm font-bold text-white/60">Próximo</p>
+                    <p class="text-xl font-bold" data-notes-next>
+                        —
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button
+                        type="button"
+                        class="h-16 rounded-2xl bg-white/10 text-lg font-bold hover:bg-white/15"
+                        data-notes-cmd="prev"
+                    >
+                        ← Voltar
+                    </button>
+                    <button
+                        type="button"
+                        class="h-16 rounded-2xl bg-orange-500 text-lg font-bold text-navy-950 hover:bg-orange-300"
+                        data-notes-cmd="next"
+                    >
+                        Avançar →
+                    </button>
+                </div>
+                <p class="text-sm text-white/60">
+                    As setas do teclado também funcionam nesta janela.
+                </p>
+            </aside>
+        </div>
+    </main>
+
+    <script define:vars={{ titles: slides.map((s) => s.data.title) }}>
+        window.__deckTitles = titles;
+    </script>
+    <script>
+        import { DECK_CHANNEL, type DeckMessage } from '@/lib/deck/runtime';
+
+        const titles = (window as unknown as { __deckTitles: string[] })
+            .__deckTitles;
+        const channel = new BroadcastChannel(DECK_CHANNEL);
+        const counter = document.querySelector<HTMLElement>(
+            '[data-notes-counter]',
+        );
+        const nextEl = document.querySelector<HTMLElement>('[data-notes-next]');
+        const timerEl =
+            document.querySelector<HTMLElement>('[data-notes-timer]');
+
+        channel.addEventListener(
+            'message',
+            (event: MessageEvent<DeckMessage>) => {
+                const msg = event.data;
+                if (msg.type !== 'state') return;
+                document
+                    .querySelectorAll<HTMLElement>('[data-notes-index]')
+                    .forEach((el) => {
+                        el.hidden = Number(el.dataset.notesIndex) !== msg.slide;
+                    });
+                if (counter)
+                    counter.textContent = `Slide ${msg.slide + 1} de ${msg.total} · etapa ${msg.build}`;
+                if (nextEl)
+                    nextEl.textContent =
+                        titles[msg.slide + 1] ?? 'Fim da apresentação';
+            },
+        );
+        channel.postMessage({ type: 'hello' } satisfies DeckMessage);
+
+        const send = (action: 'next' | 'prev') =>
+            channel.postMessage({
+                type: 'command',
+                action,
+            } satisfies DeckMessage);
+        document
+            .querySelectorAll<HTMLElement>('[data-notes-cmd]')
+            .forEach((button) =>
+                button.addEventListener('click', () =>
+                    send(button.dataset.notesCmd as 'next' | 'prev'),
+                ),
+            );
+        document.addEventListener('keydown', (event) => {
+            if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
+                event.preventDefault();
+                send('next');
+            }
+            if (['ArrowLeft', 'PageUp'].includes(event.key)) {
+                event.preventDefault();
+                send('prev');
+            }
+        });
+
+        let start = Date.now();
+        document
+            .querySelector('[data-notes-reset]')
+            ?.addEventListener('click', () => (start = Date.now()));
+        setInterval(() => {
+            const s = Math.floor((Date.now() - start) / 1000);
+            if (timerEl)
+                timerEl.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</BaseLayout>

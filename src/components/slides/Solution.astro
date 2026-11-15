@@ -1,0 +1,98 @@
+---
+import BrowserFrame from '@/components/ui/BrowserFrame.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import ProtocolList from '@/components/mocks/ProtocolList.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/**
+ * S04 · A virada — "amanhecer": o céu clareia e os pedidos espalhados viram
+ * protocolos organizados (cena "order"). O "fio da voz" liga as etapas.
+ */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide, mode = 'web' } = Astro.props;
+const { kicker, title, lead, items, cards } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection slide={slide} class="overflow-clip" scene="order">
+    <div
+        class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-48 bg-[linear-gradient(180deg,#0c2a4d_0%,rgb(12_42_77/0)_100%)] opacity-0"
+        aria-hidden="true"
+        data-dawn
+    ></div>
+    <div class="container-site flex flex-col gap-12">
+        <SectionHeader
+            kicker={kicker}
+            title={title}
+            lead={lead}
+            align="center"
+            id={`${anchor}-title`}
+        />
+
+        <div class="relative">
+            <svg
+                class="pointer-events-none absolute top-7 left-0 hidden h-6 w-full @5xl:block"
+                viewBox="0 0 1200 24"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+            >
+                <path
+                    d="M40 12C160 -4 240 28 360 12S560 -4 680 12S880 28 1000 12S1120 -2 1160 12"
+                    fill="none"
+                    stroke="#F07D3F"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    data-thread
+                ></path>
+            </svg>
+            <ol class="relative grid grid-cols-2 gap-6 @3xl:grid-cols-3 @5xl:grid-cols-6">
+                {items.map((item, index) => (
+                    <li
+                        class="flex flex-col items-center gap-3 text-center"
+                        data-reveal
+                        data-build={index + 1}
+                    >
+                        <span class="relative flex size-14 items-center justify-center rounded-2xl bg-white text-orange-700 shadow-soft ring-1 ring-line">
+                            {item.icon && (
+                                <Icon name={item.icon} class="size-6" />
+                            )}
+                            <span class="absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full bg-navy-900 text-[0.7rem] font-extrabold text-white">
+                                {index + 1}
+                            </span>
+                        </span>
+                        <span class="font-bold text-ink">{item.title}</span>
+                        <span class="text-sm text-ink-muted">{item.text}</span>
+                    </li>
+                ))}
+            </ol>
+        </div>
+
+        <BrowserFrame
+            class="mx-auto w-full max-w-[52rem]"
+            url="painel.suaprefeitura.gov.br/demandas"
+            label="Lista de demandas organizadas por protocolo, com foto, GPS e prioridade"
+        >
+            <ProtocolList rows={cards} />
+        </BrowserFrame>
+
+        {mode === 'web' && (
+            <div class="flex flex-wrap items-center justify-center gap-3">
+                <Button href="#contato" track="cta_click:solucao" magnetic>
+                    Agendar demonstração
+                    <Icon name="arrow-right" class="size-4" />
+                </Button>
+                <span class="text-sm text-ink-muted">
+                    ou continue rolando para ver como funciona
+                </span>
+            </div>
+        )}
+    </div>
+</SlideSection>

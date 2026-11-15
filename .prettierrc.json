@@ -1,0 +1,16 @@
+{
+    "semi": true,
+    "singleQuote": true,
+    "htmlWhitespaceSensitivity": "css",
+    "printWidth": 80,
+    "tabWidth": 4,
+    "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
+    "tailwindStylesheet": "./src/styles/global.css",
+    "overrides": [
+        { "files": "*.astro", "options": { "parser": "astro" } },
+        {
+            "files": ["**/*.yml", "**/*.yaml", "**/*.jsonc"],
+            "options": { "tabWidth": 2 }
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+---
+/**
+ * Widget VLibras (tradutor oficial do governo para Libras), carregado só
+ * depois que o navegador fica ocioso. Se o serviço do governo falhar, a
+ * página segue normal. Posicionado no canto inferior esquerdo.
+ */
+// Atributos próprios do widget (fora do tipo HTMLAttributes).
+const vw = { vw: '' } as Record<string, string>;
+const vwButton = { 'vw-access-button': '' } as Record<string, string>;
+const vwWrapper = { 'vw-plugin-wrapper': '' } as Record<string, string>;
+---
+
+<div {...vw} class="enabled" data-vlibras hidden>
+    <div {...vwButton} class="active"></div>
+    <div {...vwWrapper}>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
+</div>
+
+<script>
+    type VLibrasGlobal = { Widget: new (path: string) => unknown };
+
+    const load = () => {
+        const root = document.querySelector<HTMLElement>('[data-vlibras]');
+        if (!root) return;
+        const script = document.createElement('script');
+        script.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
+        script.async = true;
+        script.onload = () => {
+            try {
+                const lib = (window as unknown as { VLibras?: VLibrasGlobal })
+                    .VLibras;
+                if (!lib) return;
+                root.hidden = false;
+                new lib.Widget('https://vlibras.gov.br/app');
+                window.dispatchEvent(new Event('load'));
+            } catch {
+                root.hidden = true;
+            }
+        };
+        script.onerror = () => {
+            root.hidden = true;
+        };
+        document.body.appendChild(script);
+    };
+
+    const whenIdle = (callback: () => void) =>
+        'requestIdleCallback' in window
+            ? window.requestIdleCallback(callback, { timeout: 6000 })
+            : setTimeout(callback, 4000);
+
+    if (document.readyState === 'complete') {
+        whenIdle(load);
+    } else {
+        window.addEventListener('load', () => whenIdle(load), { once: true });
+    }
+</script>
+
+<style is:global>
+    [vw].enabled {
+        right: auto !important;
+        left: 0.5rem !important;
+        top: auto !important;
+        bottom: 5.5rem !important;
+        transform: none !important;
+    }
+</style>

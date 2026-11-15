@@ -1,0 +1,125 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/**
+ * S05 · Como funciona — 4 passos. Em telas largas, a cena "journey" fixa o
+ * slide e revela os passos com a linha de progresso; sem JS/celular, é uma
+ * grade normal.
+ */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection slide={slide} scene="journey">
+    <div class="container-site flex flex-col gap-12">
+        <SectionHeader kicker={kicker} title={title} id={`${anchor}-title`} />
+
+        <div class="relative">
+            <div
+                class="absolute top-[1.6rem] right-[12%] left-[12%] hidden h-1 overflow-hidden rounded-full bg-line @7xl:block"
+                aria-hidden="true"
+            >
+                <i
+                    class="block h-full w-full origin-left rounded-full bg-orange-500"
+                    data-journey-progress
+                ></i>
+            </div>
+            <ol class="relative grid gap-5 @3xl:grid-cols-2 @7xl:grid-cols-4">
+                {items.map((item, index) => (
+                    <li
+                        class="card flex flex-col gap-4 p-6"
+                        data-journey-step
+                        data-reveal
+                        data-build={index + 1}
+                    >
+                        <span class="flex items-center gap-3">
+                            <span class="relative z-10 flex size-13 items-center justify-center rounded-2xl bg-navy-900 text-white ring-8 ring-paper">
+                                {item.icon && (
+                                    <Icon name={item.icon} class="size-6" />
+                                )}
+                            </span>
+                            <span class="text-sm font-extrabold tracking-widest text-accent-text">
+                                PASSO {String(index + 1).padStart(2, '0')}
+                            </span>
+                        </span>
+                        <span class="text-[1.2rem] font-extrabold text-ink">
+                            {item.title}
+                        </span>
+                        <span class="text-[0.97rem] leading-relaxed text-ink-muted">
+                            {item.text}
+                        </span>
+                        <span class="mt-auto pt-2" aria-hidden="true">
+                            {index === 0 && (
+                                <span class="flex flex-col gap-1.5 rounded-xl bg-chat-bg p-3 text-[0.72rem]">
+                                    <span class="max-w-[85%] self-start rounded-lg bg-white px-2 py-1">
+                                        Mande uma foto do local 📷
+                                    </span>
+                                    <span class="self-end rounded-lg bg-chat-out px-2 py-1">
+                                        📍 Rua das Flores, 120
+                                    </span>
+                                    <span class="self-start rounded-lg bg-white px-2 py-1 font-bold">
+                                        Protocolo #0042 ✅
+                                    </span>
+                                </span>
+                            )}
+                            {index === 1 && (
+                                <span class="flex flex-wrap gap-1.5 text-[0.7rem] font-bold">
+                                    <span class="rounded-lg bg-[#e6f6ec] px-2 py-1 text-success">
+                                        ✓ Local confere
+                                    </span>
+                                    <span class="rounded-lg bg-[#e6f6ec] px-2 py-1 text-success">
+                                        ✓ Foto original
+                                    </span>
+                                    <span class="rounded-lg bg-navy-100 px-2 py-1 text-navy-900">
+                                        Buracos · ★★★★☆
+                                    </span>
+                                    <span class="rounded-lg bg-navy-100 px-2 py-1 text-navy-900">
+                                        +9 repetidos
+                                    </span>
+                                </span>
+                            )}
+                            {index === 2 && (
+                                <span class="flex items-center justify-between rounded-xl bg-paper p-3 text-[0.72rem] ring-1 ring-line">
+                                    <span>
+                                        <b class="block">O.S. #0042</b>
+                                        <span class="text-muted">
+                                            Equipe Centro · em execução
+                                        </span>
+                                    </span>
+                                    <span class="rounded-lg bg-navy-900 px-2 py-1 font-bold text-white">
+                                        📷 Depois
+                                    </span>
+                                </span>
+                            )}
+                            {index === 3 && (
+                                <span class="flex items-center gap-2 rounded-xl bg-white p-3 text-[0.72rem] shadow-soft ring-1 ring-line">
+                                    <span class="flex size-8 items-center justify-center rounded-lg bg-green-500 text-white">
+                                        ✓
+                                    </span>
+                                    <span>
+                                        <b class="block">
+                                            Seu pedido foi resolvido!
+                                        </b>
+                                        <span class="text-muted">
+                                            Veja o antes e depois.
+                                        </span>
+                                    </span>
+                                </span>
+                            )}
+                        </span>
+                    </li>
+                ))}
+            </ol>
+        </div>
+    </div>
+</SlideSection>

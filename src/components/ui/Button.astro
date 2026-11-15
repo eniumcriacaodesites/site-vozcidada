@@ -1,0 +1,68 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+/**
+ * Botão/link com as variantes do design system.
+ * - primary: laranja com texto navy (contraste 5,3:1) — o CTA principal.
+ * - secondary: contorno que se adapta ao tema da seção.
+ * - ghost: só texto.
+ * `track` vira data-track (evento de analytics); `magnetic` liga o efeito
+ * magnético no desktop.
+ */
+type Props = HTMLAttributes<'a'> & {
+    href?: string;
+    variant?: 'primary' | 'secondary' | 'ghost';
+    size?: 'md' | 'lg';
+    track?: string;
+    magnetic?: boolean;
+    type?: 'button' | 'submit';
+};
+
+const {
+    href,
+    variant = 'primary',
+    size = 'md',
+    track,
+    magnetic = false,
+    type = 'button',
+    class: className,
+    ...rest
+} = Astro.props;
+
+const base =
+    'group/btn relative inline-flex items-center justify-center gap-2 rounded-full font-bold whitespace-nowrap transition-[background-color,box-shadow,color,transform] duration-300 ease-out-expo active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60';
+
+const variants = {
+    primary:
+        'bg-orange-500 text-navy-950 shadow-[0_12px_30px_-12px_rgb(240_125_63/0.75)] hover:bg-orange-300 hover:shadow-[0_18px_40px_-14px_rgb(240_125_63/0.9)]',
+    secondary:
+        'border border-edge text-ink hover:border-ink/40 hover:bg-surface-2',
+    ghost: 'text-ink underline-offset-4 hover:underline',
+};
+
+const sizes = {
+    md: 'h-11 px-5 text-[0.95rem]',
+    lg: 'h-13 px-7 text-base',
+};
+
+const classes = [
+    base,
+    variants[variant],
+    variant !== 'ghost' && sizes[size],
+    className,
+];
+const data = {
+    'data-track': track,
+    'data-magnetic': magnetic ? '' : undefined,
+};
+---
+
+{href ? (
+    <a href={href} class:list={classes} {...data} {...rest}>
+        <slot />
+    </a>
+) : (
+    <button type={type} class:list={classes} {...data} {...(rest as object)}>
+        <slot />
+    </button>
+)}

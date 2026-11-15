@@ -1,0 +1,35 @@
+---
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S13 · Segurança e privacidade (sem prometer certificações). */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items, footnote } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection
+    slide={slide}
+    class="grain bg-[linear-gradient(180deg,#05254d_0%,#0c2a4d_100%)]"
+>
+    <div class="container-site flex flex-col gap-12">
+        <SectionHeader kicker={kicker} title={title} id={`${anchor}-title`} />
+        <FeatureGrid
+            items={items}
+            columns="@3xl:grid-cols-2 @6xl:grid-cols-3"
+        />
+        {footnote && (
+            <p class="text-sm text-white/65" data-reveal>
+                {footnote}
+            </p>
+        )}
+    </div>
+</SlideSection>

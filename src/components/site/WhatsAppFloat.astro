@@ -1,0 +1,25 @@
+---
+import WhatsAppIcon from '@/components/ui/WhatsAppIcon.astro';
+import { site, whatsappLink } from '@/lib/site';
+
+/**
+ * Botão flutuante de WhatsApp. A mensagem leva a seção atual
+ * (o script de navegação atualiza o href). Some na seção de contato.
+ */
+const href = whatsappLink();
+---
+
+{href && (
+    <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="fixed right-4 bottom-4 z-40 flex size-14 translate-y-24 items-center justify-center rounded-full bg-[#25d366] text-white opacity-0 shadow-[0_14px_30px_-10px_rgb(37_211_102/0.8)] transition-[transform,opacity] duration-500 ease-out-expo hover:scale-105 data-[visible]:translate-y-0 data-[visible]:opacity-100 sm:right-6 sm:bottom-6"
+        aria-label="Conversar pelo WhatsApp"
+        data-whatsapp-float
+        data-number={site.whatsappNumber}
+        data-track="whatsapp_click:flutuante"
+    >
+        <WhatsAppIcon class="size-7" />
+    </a>
+)}

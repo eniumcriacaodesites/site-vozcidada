@@ -1,0 +1,48 @@
+---
+import Dashboard from '@/components/mocks/Dashboard.astro';
+import BrowserFrame from '@/components/ui/BrowserFrame.astro';
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S10 · Painel do gestor — indicadores, mapa de calor, insight e relatórios. */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items, footnote } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection
+    slide={slide}
+    class="grain bg-[radial-gradient(ellipse_at_15%_20%,#1d4677_0%,#05254d_60%)]"
+    scene="dashboard"
+>
+    <div class="container-site grid items-center gap-12 @6xl:grid-cols-[0.8fr_1.2fr]">
+        <div class="flex flex-col gap-9">
+            <SectionHeader
+                kicker={kicker}
+                title={title}
+                id={`${anchor}-title`}
+            />
+            <FeatureGrid items={items} variant="list" />
+        </div>
+        <div class="flex flex-col gap-3" data-reveal>
+            <div class="overflow-hidden">
+                <BrowserFrame
+                    url="painel.suaprefeitura.gov.br/painel"
+                    class="[zoom:0.6] @3xl:[zoom:0.85] @6xl:[zoom:1]"
+                    label="Painel do gestor com indicadores, gráfico por categoria, mapa de calor e insight da IA"
+                >
+                    <Dashboard />
+                </BrowserFrame>
+            </div>
+            {footnote && <p class="text-xs text-white/60">{footnote}</p>}
+        </div>
+    </div>
+</SlideSection>

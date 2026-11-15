@@ -1,0 +1,18 @@
+---
+import Button from '@/components/ui/Button.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+---
+
+<PageLayout title="Página não encontrada" noindex path="/404">
+    <div class="mx-auto flex max-w-xl flex-col items-center gap-5 text-center">
+        <p class="kicker">Erro 404</p>
+        <h1 class="text-title font-extrabold text-navy-900">
+            Esta página não existe.
+        </h1>
+        <p class="text-lead text-muted">
+            O endereço pode ter mudado. Volte para o início e conheça o
+            VozCidadã.
+        </p>
+        <Button href="/">Voltar para o início</Button>
+    </div>
+</PageLayout>

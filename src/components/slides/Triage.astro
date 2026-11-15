@@ -1,0 +1,38 @@
+---
+import TriageCenter from '@/components/mocks/TriageCenter.astro';
+import BrowserFrame from '@/components/ui/BrowserFrame.astro';
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S08 · Triagem e gestão — centro de triagem com holofote (cena "spotlight"). */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection slide={slide} scene="spotlight">
+    <div class="container-site flex flex-col gap-12">
+        <SectionHeader kicker={kicker} title={title} id={`${anchor}-title`} />
+        <div class="overflow-hidden" data-reveal>
+            <BrowserFrame
+                url="painel.suaprefeitura.gov.br/triagem"
+                class="[zoom:0.56] @3xl:[zoom:0.8] @5xl:[zoom:1]"
+                label="Centro de triagem com fila priorizada, mapa de calor e detalhe da demanda"
+            >
+                <TriageCenter />
+            </BrowserFrame>
+        </div>
+        <FeatureGrid
+            items={items}
+            columns="@3xl:grid-cols-2 @6xl:grid-cols-3"
+        />
+    </div>
+</SlideSection>

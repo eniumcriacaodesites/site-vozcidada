@@ -1,0 +1,46 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+
+/** Quadro de ordens de serviço (aceita → a caminho → em execução → concluída). */
+interface Column {
+    title: string;
+    cards: { id: string; label: string; done?: boolean }[];
+}
+
+const columns: Column[] = [
+    { title: 'Aceita', cards: [{ id: '#0051', label: 'Galho caído' }] },
+    { title: 'A caminho', cards: [{ id: '#0047', label: 'Poste apagado' }] },
+    { title: 'Em execução', cards: [{ id: '#0049', label: 'Lixo acumulado' }] },
+    {
+        title: 'Concluída',
+        cards: [{ id: '#0042', label: 'Buraco na via', done: true }],
+    },
+];
+---
+
+<div class="grid grid-cols-4 gap-2 bg-paper p-3 text-[0.68rem]" data-kanban>
+    {columns.map((column) => (
+        <div class="space-y-2 rounded-xl bg-white/70 p-2 ring-1 ring-line">
+            <p class="text-[0.6rem] font-extrabold text-muted uppercase">
+                {column.title}
+            </p>
+            {column.cards.map((card) => (
+                <div
+                    class:list={[
+                        'space-y-1 rounded-lg bg-white p-2 shadow-sm ring-1',
+                        card.done ? 'ring-green-500/50' : 'ring-line',
+                    ]}
+                    data-wo={card.id}
+                >
+                    <p class="font-bold">{card.id}</p>
+                    <p class="text-muted">{card.label}</p>
+                    {card.done && (
+                        <p class="flex items-center gap-1 text-[0.58rem] font-bold text-success">
+                            <Icon name="camera" class="size-3" /> foto do depois
+                        </p>
+                    )}
+                </div>
+            ))}
+        </div>
+    ))}
+</div>

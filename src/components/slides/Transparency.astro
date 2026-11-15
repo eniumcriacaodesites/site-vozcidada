@@ -1,0 +1,61 @@
+---
+import AppFeed from '@/components/mocks/AppFeed.astro';
+import FeatureGrid from '@/components/ui/FeatureGrid.astro';
+import Icon from '@/components/ui/Icon.astro';
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/** S11 · Transparência e marca própria. */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items } = slide.data;
+const anchor = slideAnchor(slide.id);
+---
+
+<SlideSection slide={slide}>
+    <div class="container-site grid items-center gap-12 @5xl:grid-cols-[1.1fr_0.9fr]">
+        <div class="flex flex-col gap-9">
+            <SectionHeader
+                kicker={kicker}
+                title={title}
+                id={`${anchor}-title`}
+            />
+            <FeatureGrid items={items} variant="list" />
+        </div>
+        <div class="relative mx-auto w-fit" data-reveal>
+            <PhoneFrame
+                class="w-[min(17.5rem,66cqi)] @5xl:w-[min(19rem,27cqi)]"
+                label="Feed público da cidade com obras concluídas e comunicados"
+            >
+                <AppFeed />
+            </PhoneFrame>
+            <div
+                class="absolute top-[38%] -left-40 hidden items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-sm font-bold whitespace-nowrap text-text shadow-lift ring-1 ring-line @5xl:flex"
+                data-depth="0.15"
+                data-chip
+            >
+                <span class="flex size-7 items-center justify-center rounded-full bg-green-500 text-white">
+                    <Icon name="eye" class="size-4" />
+                </span>
+                Revisado pela equipe
+            </div>
+            <div
+                class="absolute -right-44 bottom-[22%] hidden items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-sm font-bold whitespace-nowrap text-text shadow-lift ring-1 ring-line @5xl:flex"
+                data-depth="0.22"
+                data-chip
+            >
+                <span class="flex size-7 items-center justify-center rounded-full bg-navy-900 text-white">
+                    <Icon name="lock" class="size-4" />
+                </span>
+                Maria S. · sem número da casa
+            </div>
+        </div>
+    </div>
+</SlideSection>

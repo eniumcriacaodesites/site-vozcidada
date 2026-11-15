@@ -1,0 +1,145 @@
+---
+import AppChat from '@/components/mocks/AppChat.astro';
+import AppFeed from '@/components/mocks/AppFeed.astro';
+import AppLocation from '@/components/mocks/AppLocation.astro';
+import AppLogin from '@/components/mocks/AppLogin.astro';
+import AppTrack from '@/components/mocks/AppTrack.astro';
+import Icon from '@/components/ui/Icon.astro';
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import { site } from '@/lib/site';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/**
+ * S06 · App do cidadão — celular "fixo" (CSS sticky) com as telas trocando
+ * conforme o recurso em destaque (cena "phone-steps").
+ */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide } = Astro.props;
+const { kicker, title, items } = slide.data;
+const anchor = slideAnchor(slide.id);
+
+const screenLabels = [
+    'Entrada com código enviado pelo WhatsApp',
+    'Assistente de chat com foto e áudio',
+    'Escolha do local com GPS e pino ajustável',
+    'Linha do tempo da demanda até a solução',
+    'Feed da cidade com obras concluídas',
+];
+---
+
+<SlideSection slide={slide} scene="phone-steps">
+    <div class="container-site grid gap-12 @5xl:grid-cols-[1.1fr_0.9fr]">
+        <div class="flex flex-col gap-10">
+            <SectionHeader
+                kicker={kicker}
+                title={title}
+                id={`${anchor}-title`}
+            />
+            <ol class="flex flex-col gap-3">
+                {items.map((item, index) => (
+                    <li
+                        class="group/step card flex gap-4 p-5 transition-[box-shadow,transform] duration-500 data-[active]:-translate-y-0.5 data-[active]:shadow-lift data-[active]:ring-2 data-[active]:ring-orange-500/60"
+                        data-phone-step={index}
+                        data-reveal
+                        data-build={index + 1}
+                    >
+                        <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-orange-500/12 text-accent-text ring-1 ring-orange-500/25 transition-colors group-data-[active]/step:bg-orange-500 group-data-[active]/step:text-navy-950">
+                            {item.icon && (
+                                <Icon name={item.icon} class="size-5" />
+                            )}
+                        </span>
+                        <span class="flex flex-col gap-1">
+                            <span class="text-[1.05rem] font-bold text-ink">
+                                {item.title}
+                            </span>
+                            <span class="text-[0.95rem] text-ink-muted">
+                                {item.text}
+                            </span>
+                        </span>
+                    </li>
+                ))}
+            </ol>
+            <div class="flex flex-wrap items-center gap-3" data-reveal>
+                <a
+                    href={site.googlePlayUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex h-12 items-center gap-2.5 rounded-xl bg-navy-950 px-4 text-white transition-transform hover:-translate-y-0.5"
+                    data-track="store_click:google_play"
+                >
+                    <svg viewBox="0 0 24 24" class="size-6" aria-hidden="true">
+                        <path
+                            fill="#00d7fe"
+                            d="M3.6 1.8 13.4 12 3.6 22.2c-.4-.2-.6-.7-.6-1.2V3c0-.5.2-1 .6-1.2Z"
+                        ></path>
+                        <path
+                            fill="#ffce00"
+                            d="m16.8 8.6 3.3 1.9c1.2.7 1.2 2.3 0 3l-3.3 1.9L13.4 12l3.4-3.4Z"
+                        ></path>
+                        <path
+                            fill="#ff3a44"
+                            d="M3.6 22.2 13.4 12l3.4 3.4-11.5 6.6c-.6.4-1.2.4-1.7.2Z"
+                        ></path>
+                        <path
+                            fill="#00f076"
+                            d="M3.6 1.8c.5-.2 1.1-.2 1.7.2l11.5 6.6-3.4 3.4L3.6 1.8Z"
+                        ></path>
+                    </svg>
+                    <span class="leading-tight">
+                        <span class="block text-[0.6rem] uppercase">
+                            Disponível no
+                        </span>
+                        <span class="block text-[1rem] font-bold">
+                            Google Play
+                        </span>
+                    </span>
+                </a>
+                <span class="inline-flex h-12 items-center gap-2 rounded-xl border border-dashed border-edge px-4 text-sm font-semibold text-ink-muted">
+                    App Store · em breve
+                </span>
+                <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-muted">
+                    <Icon name="check" class="size-4 text-success" /> Também
+                    funciona no navegador, sem instalar
+                </span>
+            </div>
+        </div>
+
+        <div class="relative @5xl:order-none">
+            <div class="@5xl:sticky @5xl:top-[12vh]">
+                <PhoneFrame
+                    class="w-[min(18rem,68cqi)] @5xl:w-[min(19.5rem,28cqi)]"
+                    label="Telas do app do cidadão"
+                >
+                    <div class="relative h-full" data-phone-screens>
+                        {[
+                            AppLogin,
+                            AppChat,
+                            AppLocation,
+                            AppTrack,
+                            AppFeed,
+                        ].map((Screen, index) => (
+                            <div
+                                class="absolute inset-0 opacity-0 transition-opacity duration-500 data-[active]:opacity-100"
+                                data-phone-screen={index}
+                                data-active={index === 1 ? '' : undefined}
+                                aria-label={screenLabels[index]}
+                            >
+                                <Screen />
+                            </div>
+                        ))}
+                    </div>
+                </PhoneFrame>
+                <p class="mt-4 text-center text-xs text-ink-muted">
+                    Telas ilustrativas
+                </p>
+            </div>
+        </div>
+    </div>
+</SlideSection>

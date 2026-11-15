@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.json",
+    "include": [
+        ".astro/types.d.ts",
+        "src/components/islands/**/*",
+        "src/lib/**/*.ts"
+    ]
+}

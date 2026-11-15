@@ -1,0 +1,75 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
+
+/**
+ * Lista de recursos (ícone + título + texto). Variante "cards" (cartões) ou
+ * "list" (linhas compactas). Cada item tem `data-reveal` e `data-build`
+ * (aparece a cada clique no Modo Apresentação).
+ */
+interface Item {
+    title: string;
+    text?: string;
+    icon?: IconName;
+}
+
+interface Props {
+    items: Item[];
+    variant?: 'cards' | 'list';
+    columns?: string;
+    class?: string;
+    buildFrom?: number;
+}
+
+const {
+    items,
+    variant = 'cards',
+    columns = '@3xl:grid-cols-2',
+    class: className = '',
+    buildFrom = 1,
+} = Astro.props;
+---
+
+<ul
+    class:list={[
+        variant === 'cards' ? 'grid gap-4' : 'grid gap-5',
+        variant === 'cards' && columns,
+        className,
+    ]}
+>
+    {items.map((item, index) => (
+        <li
+            class:list={[
+                'group/feature relative',
+                variant === 'cards' &&
+                    'card flex flex-col gap-3 p-5 transition-transform duration-500 ease-out-expo hover:-translate-y-1',
+                variant === 'list' && 'flex gap-4',
+            ]}
+            data-reveal
+            data-build={buildFrom + index}
+            data-spotlight={variant === 'cards' ? '' : undefined}
+        >
+            {item.icon && (
+                <span
+                    class:list={[
+                        'flex shrink-0 items-center justify-center rounded-xl',
+                        'bg-orange-500/12 text-accent-text ring-1 ring-orange-500/25',
+                        variant === 'cards' ? 'size-11' : 'size-10',
+                    ]}
+                >
+                    <Icon name={item.icon} class="size-5" />
+                </span>
+            )}
+            <span class="flex flex-col gap-1">
+                <span class="text-[1.05rem] font-bold text-ink">
+                    {item.title}
+                </span>
+                {item.text && (
+                    <span class="text-[0.95rem] leading-relaxed text-ink-muted">
+                        {item.text}
+                    </span>
+                )}
+            </span>
+        </li>
+    ))}
+</ul>

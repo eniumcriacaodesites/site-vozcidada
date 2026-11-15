@@ -1,0 +1,52 @@
+---
+/**
+ * Navegação lateral por slides (estilo apresentação) + contador "04 / 17".
+ * O script de navegação marca o slide atual (aria-current) e troca as cores
+ * conforme o tema (claro/escuro) da seção visível.
+ */
+interface Item {
+    anchor: string;
+    label: string;
+    order: number;
+}
+
+interface Props {
+    items: Item[];
+}
+
+const { items } = Astro.props;
+const total = String(items.length).padStart(2, '0');
+---
+
+<nav
+    class="group/dots fixed top-1/2 right-4 z-40 hidden -translate-y-1/2 flex-col items-end gap-3 lg:flex"
+    aria-label="Slides"
+    data-dot-nav
+    data-on="dark"
+>
+    <ol class="flex flex-col items-end gap-2.5">
+        {items.map((item) => (
+            <li>
+                <a
+                    href={`#${item.anchor}`}
+                    class="group/dot flex items-center gap-3 py-0.5"
+                    data-dot={item.anchor}
+                >
+                    <span class="pointer-events-none translate-x-2 rounded-full bg-navy-950/90 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-white opacity-0 shadow-lg transition-all duration-300 group-hover/dot:translate-x-0 group-hover/dot:opacity-100 group-focus-visible/dot:translate-x-0 group-focus-visible/dot:opacity-100">
+                        {String(item.order).padStart(2, '0')} · {item.label}
+                    </span>
+                    <span class="block size-2 rounded-full bg-white/45 ring-2 ring-transparent transition-all duration-300 group-hover/dot:bg-white group-aria-[current=true]/dot:h-5 group-aria-[current=true]/dot:bg-orange-500 group-data-[on=light]/dots:bg-navy-900/35 group-data-[on=light]/dots:group-hover/dot:bg-navy-900" />
+                    <span class="sr-only">
+                        {String(item.order).padStart(2, '0')} · {item.label}
+                    </span>
+                </a>
+            </li>
+        ))}
+    </ol>
+    <p
+        class="tabular mt-1 text-xs font-bold text-white/70 group-data-[on=light]/dots:text-navy-900/70"
+        aria-live="off"
+    >
+        <span data-dot-current>01</span> / {total}
+    </p>
+</nav>

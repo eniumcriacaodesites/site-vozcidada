@@ -1,0 +1,39 @@
+---
+/** Moldura de janela de navegador para as telas do painel. */
+interface Props {
+    url?: string;
+    class?: string;
+    label?: string;
+}
+
+const {
+    url = 'painel.suaprefeitura.gov.br',
+    class: className = '',
+    label,
+} = Astro.props;
+---
+
+<figure
+    class:list={[
+        'overflow-hidden rounded-panel border border-line bg-white text-text shadow-lift',
+        className,
+    ]}
+    aria-label={label}
+    role={label ? 'img' : undefined}
+>
+    <div
+        class="flex items-center gap-2 border-b border-line bg-paper px-4 py-2.5"
+        aria-hidden="true"
+    >
+        <span class="size-2.5 rounded-full bg-[#ff5f57]"></span>
+        <span class="size-2.5 rounded-full bg-[#febc2e]"></span>
+        <span class="size-2.5 rounded-full bg-[#28c840]"></span>
+        <span class="mx-auto truncate rounded-md bg-white px-3 py-1 text-[0.7rem] text-muted ring-1 ring-line">
+            {url}
+        </span>
+        <span class="w-10"></span>
+    </div>
+    <div class="relative" aria-hidden={label ? 'true' : undefined}>
+        <slot />
+    </div>
+</figure>

@@ -1,0 +1,119 @@
+---
+import StreetScene from '@/components/art/StreetScene.astro';
+
+/**
+ * Comparador antes/depois. A interação é um <input type="range"> nativo
+ * (acessível por teclado e leitor de tela); o script só liga o valor à
+ * variável CSS --pos e faz uma demonstração automática (se houver movimento).
+ */
+interface Props {
+    class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div
+    class:list={[
+        'before-after relative aspect-[4/3] overflow-hidden rounded-panel shadow-lift ring-1 ring-black/10 select-none',
+        className,
+    ]}
+    style="--pos: 50%"
+    data-before-after
+>
+    <div class="absolute inset-0">
+        <StreetScene state="after" title="Depois: rua recapeada e sinalizada" />
+        <span class="absolute top-3 right-3 rounded-full bg-green-500 px-3 py-1 text-xs font-extrabold text-white">
+            DEPOIS
+        </span>
+    </div>
+    <div class="absolute inset-0 [clip-path:inset(0_calc(100%-var(--pos))_0_0)]">
+        <StreetScene state="before" title="Antes: buraco na via" />
+        <span class="absolute top-3 left-3 rounded-full bg-navy-950/85 px-3 py-1 text-xs font-extrabold text-white">
+            ANTES
+        </span>
+    </div>
+    <div
+        class="pointer-events-none absolute inset-y-0 left-[var(--pos)] w-1 -translate-x-1/2 bg-white shadow-[0_0_12px_rgb(0_0_0/0.4)]"
+        aria-hidden="true"
+    >
+        <span class="absolute top-1/2 left-1/2 flex size-11 -translate-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg">
+            <svg
+                viewBox="0 0 24 24"
+                class="size-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="m9 6-6 6 6 6M15 6l6 6-6 6"></path>
+            </svg>
+        </span>
+    </div>
+    <input
+        type="range"
+        min="0"
+        max="100"
+        value="50"
+        class="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+        aria-label="Comparar antes e depois do serviço"
+        data-ba-input
+    />
+</div>
+
+<script>
+    const reduceMotion = () =>
+        matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        document.documentElement.dataset.motion === 'off';
+
+    for (const root of document.querySelectorAll<HTMLElement>(
+        '[data-before-after]',
+    )) {
+        const input = root.querySelector<HTMLInputElement>('[data-ba-input]');
+        if (!input) continue;
+
+        const set = (value: number) => {
+            root.style.setProperty('--pos', `${value}%`);
+            input.value = String(value);
+        };
+        let touched = false;
+        input.addEventListener('input', () => {
+            touched = true;
+            root.style.transition = 'none';
+            set(Number(input.value));
+        });
+
+        // Demonstração automática uma única vez, ao entrar na tela.
+        const io = new IntersectionObserver(
+            (entries) => {
+                if (!entries.some((e) => e.isIntersecting)) return;
+                io.disconnect();
+                if (reduceMotion() || touched) return;
+                const frames = [22, 78, 50];
+                let i = 0;
+                root.style.transition =
+                    '--pos 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                const step = () => {
+                    if (touched || i >= frames.length) {
+                        root.style.transition = 'none';
+                        return;
+                    }
+                    set(frames[i++]);
+                    setTimeout(step, 750);
+                };
+                setTimeout(step, 300);
+            },
+            { threshold: 0.6 },
+        );
+        io.observe(root);
+    }
+</script>
+
+<style>
+    @property --pos {
+        syntax: '<percentage>';
+        inherits: true;
+        initial-value: 50%;
+    }
+</style>

@@ -1,0 +1,18 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://challenges.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cloud.umami.is https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://vlibras.gov.br https://*.vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br; font-src 'self' data: https://vlibras.gov.br https://*.vlibras.gov.br; connect-src 'self' https://challenges.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cloud.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com; frame-src https://challenges.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br; worker-src 'self' blob:; media-src 'self' blob: https://vlibras.gov.br https://*.vlibras.gov.br; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/data/ibge/*
+  Cache-Control: public, max-age=604800
+
+/apresentacao*
+  X-Robots-Tag: noindex
+
+/obrigado*
+  X-Robots-Tag: noindex

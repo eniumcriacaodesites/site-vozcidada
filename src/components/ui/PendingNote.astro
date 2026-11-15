@@ -1,0 +1,30 @@
+---
+import { PUBLIC_SHOW_PENDING } from 'astro:env/client';
+
+/**
+ * Aviso de conteúdo pendente de validação (cliente/comercial/jurídico).
+ * Só aparece quando PUBLIC_SHOW_PENDING=true (dev e preview), nunca em produção.
+ */
+interface Props {
+    items: string[];
+}
+
+const { items } = Astro.props;
+const visible = PUBLIC_SHOW_PENDING && items.length > 0;
+---
+
+{visible && (
+    <aside
+        class="pointer-events-auto absolute top-20 right-4 z-30 max-w-xs rounded-xl border border-dashed border-yellow-400 bg-[#fff8e1] p-3 text-xs leading-relaxed text-[#5c4300] shadow-soft"
+        data-pending
+    >
+        <p class="mb-1 font-bold tracking-wide uppercase">
+            Pendente de validação
+        </p>
+        <ul class="list-disc space-y-1 pl-4">
+            {items.map((item) => (
+                <li>{item}</li>
+            ))}
+        </ul>
+    </aside>
+)}

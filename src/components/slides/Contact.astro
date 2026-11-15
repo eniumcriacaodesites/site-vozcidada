@@ -1,0 +1,117 @@
+---
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import QRCode from 'qrcode';
+
+import CityScape from '@/components/art/CityScape.astro';
+import LeadForm from '@/components/islands/LeadForm.vue';
+import Icon from '@/components/ui/Icon.astro';
+import WhatsAppIcon from '@/components/ui/WhatsAppIcon.astro';
+import { site, whatsappLink } from '@/lib/site';
+import { slideAnchor, type Slide } from '@/lib/slides';
+
+import SlideSection from './SlideSection.astro';
+
+/**
+ * S17 · CTA final — "a cidade amanhece" (pinos verdes). Na web, formulário;
+ * no deck, QR code para agendar na hora.
+ */
+interface Props {
+    slide: Slide;
+    mode?: 'web' | 'deck';
+}
+
+const { slide, mode = 'web' } = Astro.props;
+const { kicker, title, lead, badges } = slide.data;
+const anchor = slideAnchor(slide.id);
+const whatsapp = whatsappLink('contato');
+
+const qrTarget = `${site.url}/?utm_source=apresentacao&utm_medium=qrcode#contato`;
+const qrSvg =
+    mode === 'deck'
+        ? await QRCode.toString(qrTarget, {
+              type: 'svg',
+              margin: 1,
+              color: { dark: '#05254d', light: '#ffffff' },
+          })
+        : '';
+---
+
+<SlideSection
+    slide={slide}
+    class="grain min-h-svh bg-[linear-gradient(180deg,#05254d_0%,#0c2a4d_38%,#1d4677_70%,#5b8fd0_100%)]"
+>
+    <CityScape slot="bg" time="dawn" class="h-[22%] lg:h-[30%]" />
+    <div class="container-site relative z-10 grid items-start gap-12 pb-[30cqi] @5xl:grid-cols-[1fr_1fr] @5xl:pb-[16cqi]">
+        <div class="flex flex-col gap-7">
+            <p class="kicker" data-reveal>
+                {kicker}
+            </p>
+            <h2
+                id={`${anchor}-title`}
+                class="text-title max-w-[18ch] font-extrabold text-white"
+                data-split
+            >
+                {title}
+            </h2>
+            <p class="text-lead max-w-[46ch] text-white/80" data-reveal>
+                {lead}
+            </p>
+            <ul class="flex flex-wrap gap-2" data-reveal>
+                {badges.map((badge) => (
+                    <li class="glass flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold text-white">
+                        <Icon
+                            name="check"
+                            class="size-4 text-green-500"
+                            strokeWidth={3}
+                        />
+                        {badge}
+                    </li>
+                ))}
+            </ul>
+            {whatsapp && mode === 'web' && (
+                <a
+                    href={whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex w-fit items-center gap-3 rounded-2xl bg-white/10 px-5 py-3.5 font-semibold text-white ring-1 ring-white/20 transition-colors hover:bg-white/15"
+                    data-track="whatsapp_click:contato"
+                    data-reveal
+                >
+                    <span class="flex size-10 items-center justify-center rounded-full bg-[#25d366] text-white">
+                        <WhatsAppIcon class="size-5" />
+                    </span>
+                    <span class="flex flex-col leading-tight">
+                        <span class="text-sm text-white/70">
+                            Prefere conversar agora?
+                        </span>
+                        Chame no WhatsApp
+                    </span>
+                </a>
+            )}
+        </div>
+
+        {mode === 'web' ? (
+            <div id="agendar" class="scroll-mt-24">
+                <LeadForm
+                    client:visible
+                    siteKey={PUBLIC_TURNSTILE_SITE_KEY}
+                    whatsappHref={whatsapp}
+                    context="contato"
+                />
+                <noscript>
+                    <p class="mt-4 rounded-xl bg-white/10 p-4 text-sm text-white">
+                        Para enviar o formulário, ative o JavaScript do
+                        navegador. Se preferir, fale com a nossa equipe pelo
+                        WhatsApp.
+                    </p>
+                </noscript>
+            </div>
+        ) : (
+            <div class="flex flex-col items-center gap-4 justify-self-center rounded-[1.375rem] bg-white p-8 text-center text-text shadow-lift">
+                <div class="size-64" set:html={qrSvg} />
+                <p class="text-lg font-extrabold">Aponte a câmera e agende</p>
+                <p class="text-sm text-muted">vozcidada.enium.com.br</p>
+            </div>
+        )}
+    </div>
+</SlideSection>

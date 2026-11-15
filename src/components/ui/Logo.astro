@@ -1,0 +1,28 @@
+---
+import LogoMark from './LogoMark.astro';
+
+/** Logo horizontal: símbolo + nome. Herda a cor do texto do contexto. */
+interface Props {
+    class?: string;
+    markClass?: string;
+    textClass?: string;
+}
+
+const {
+    class: className = '',
+    markClass = 'h-8 w-auto',
+    textClass = 'text-xl',
+} = Astro.props;
+---
+
+<span class:list={['inline-flex items-center gap-2.5', className]}>
+    <LogoMark class={markClass} />
+    <span
+        class:list={[
+            'font-extrabold tracking-[-0.03em] leading-none',
+            textClass,
+        ]}
+    >
+        VozCidadã
+    </span>
+</span>

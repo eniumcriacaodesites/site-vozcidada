@@ -1,0 +1,10 @@
+dist/
+.astro/
+.wrangler/
+node_modules/
+package-lock.json
+public/downloads/
+src/data/ibge/
+playwright-report/
+test-results/
+worker-configuration.d.ts
