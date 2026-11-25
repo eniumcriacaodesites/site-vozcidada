@@ -15,10 +15,12 @@ export const site = {
         'Relatos com foto e local exato, triagem com inteligência artificial, ordem de serviço no celular da equipe e prova de antes e depois. Agende uma demonstração.',
     company: {
         name: 'Enium Tecnologia',
-        /** Razão social, CNPJ e endereço: PENDENTE (informar antes do lançamento). */
-        legalName: '',
-        cnpj: '',
-        address: '',
+        /** Site institucional da Enium (outros produtos e serviços). */
+        url: 'https://enium.com.br',
+        legalName: 'Enium Tecnologia Ltda',
+        cnpj: '27.705.989/0001-95',
+        address:
+            'Rua Men de Sá, 55, Centro, Nossa Senhora da Glória/SE, CEP 49680-000',
     },
     contactEmail: '',
     googlePlayUrl: PUBLIC_GOOGLE_PLAY_URL,

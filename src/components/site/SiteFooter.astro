@@ -24,7 +24,15 @@ const legal = [
                 O cidadão fala. A prefeitura resolve. A cidade vê.
             </p>
             <p class="text-sm">
-                Um produto <b class="text-white">{site.company.name}</b>.
+                Um produto
+                <a
+                    class="font-bold text-white hover:underline"
+                    href={site.company.url}
+                    target="_blank"
+                    rel="noopener"
+                >
+                    {site.company.name}
+                </a>
             </p>
         </div>
         <nav aria-label="Produto" class="text-sm">
@@ -96,6 +104,16 @@ const legal = [
                 <li>
                     <a class="hover:text-white" href="/#contato">
                         Agendar demonstração
+                    </a>
+                </li>
+                <li>
+                    <a
+                        class="hover:text-white"
+                        href={site.company.url}
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Conheça outros serviços da Enium
                     </a>
                 </li>
             </ul>
